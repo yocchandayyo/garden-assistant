@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#2f7a4d" />
+<title>みどりのAI庭師 🌿 | 写真で植物を見分けて育て方ガイド</title>
+<meta name="description" content="植物の写真を撮るだけでAIが種類を判定し、水やり・日当たり・肥料など詳しい育て方を日本語で教えてくれるガーデニングアシスタント。" />
+
+<!-- iPhone ホーム画面対応 -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="AI庭師" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon-180.png" />
+
+<style>
+  :root{
+    --green-900:#1b4332;
+    --green-700:#2f7a4d;
+    --green-500:#40916c;
+    --green-300:#74c69d;
+    --green-100:#d8f3dc;
+    --bg:#f4f9f4;
+    --card:#ffffff;
+    --ink:#1f2d27;
+    --ink-soft:#5a6b62;
+    --line:#e3ede6;
+    --warn:#c25a2b;
+    --shadow:0 6px 24px rgba(31,69,51,.10);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:0 16px 56px;}
+
+  /* ===== Header ===== */
+  header{
+    background:linear-gradient(160deg,var(--green-700),var(--green-500));
+    color:#fff;
+    padding:calc(env(safe-area-inset-top) + 22px) 16px 26px;
+    text-align:center;
+    border-radius:0 0 26px 26px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";position:absolute;right:-30px;top:-30px;
+    width:140px;height:140px;border-radius:50%;
+    background:rgba(255,255,255,.08);
+  }
+  header h1{margin:0;font-size:1.5rem;letter-spacing:.02em;}
+  header p{margin:6px 0 0;font-size:.86rem;opacity:.92;}
+
+  /* ===== Cards ===== */
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px;
+    margin-top:18px;
+  }
+  .card h2{
+    font-size:1rem;margin:0 0 12px;display:flex;align-items:center;gap:8px;
+    color:var(--green-900);
+  }
+
+  /* ===== API key ===== */
+  details.apikey{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    margin-top:16px;padding:0 14px;
+  }
+  details.apikey summary{
+    cursor:pointer;padding:13px 0;font-size:.9rem;font-weight:600;color:var(--green-900);
+    list-style:none;display:flex;align-items:center;justify-content:space-between;
+  }
+  details.apikey summary::-webkit-details-marker{display:none;}
+  details.apikey .pill{font-size:.72rem;padding:3px 10px;border-radius:999px;font-weight:700;}
+  .pill.ok{background:var(--green-100);color:var(--green-700);}
+  .pill.no{background:#fde8df;color:var(--warn);}
+  details.apikey .body{padding:4px 0 16px;font-size:.84rem;color:var(--ink-soft);}
+  .keyrow{display:flex;gap:8px;margin-top:10px;}
+  input[type=password],input[type=text]{
+    flex:1;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);
+    border-radius:12px;outline:none;background:#fafdfb;color:var(--ink);
+  }
+  input:focus{border-color:var(--green-300);}
+  .link{color:var(--green-700);text-decoration:underline;}
+
+  /* ===== Buttons ===== */
+  .btn{
+    border:none;border-radius:14px;padding:15px 18px;font-size:1rem;font-weight:700;
+    cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:9px;
+    transition:transform .08s ease, opacity .15s;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--green-700);color:#fff;box-shadow:0 4px 14px rgba(47,122,77,.35);}
+  .btn-ghost{background:var(--green-100);color:var(--green-700);}
+  .btn-save{background:var(--green-500);color:#fff;width:auto;padding:12px 18px;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btns{display:flex;flex-direction:column;gap:10px;}
+
+  /* ===== Upload preview ===== */
+  .preview-box{
+    margin-top:14px;border-radius:14px;overflow:hidden;display:none;
+    border:1px solid var(--line);
+  }
+  .preview-box img{width:100%;display:block;max-height:340px;object-fit:cover;}
+
+  .hint{font-size:.8rem;color:var(--ink-soft);margin:10px 2px 0;text-align:center;}
+
+  /* ===== Loading ===== */
+  #loading{display:none;text-align:center;padding:30px 10px;}
+  .leaf-spin{
+    width:46px;height:46px;margin:0 auto 14px;border-radius:50%;
+    border:4px solid var(--green-100);border-top-color:var(--green-500);
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  #loading p{color:var(--ink-soft);font-size:.9rem;margin:0;}
+
+  /* ===== Result ===== */
+  #result{display:none;}
+  .plant-head{text-align:center;padding:6px 0 4px;}
+  .plant-head .name{font-size:1.5rem;font-weight:800;color:var(--green-900);}
+  .plant-head .sci{font-style:italic;color:var(--ink-soft);font-size:.85rem;margin-top:2px;}
+  .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+  .badge{font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--green-100);color:var(--green-700);}
+  .badge.diff{background:#fff4d6;color:#a06b00;}
+  .badge.conf{background:#e3ecff;color:#2b53a0;}
+
+  .desc{font-size:.9rem;color:var(--ink);background:var(--green-100);padding:12px 14px;border-radius:12px;margin-top:14px;}
+
+  .care-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+  .care-item{background:#fafdfb;border:1px solid var(--line);border-radius:12px;padding:11px 12px;}
+  .care-item .lbl{font-size:.73rem;color:var(--ink-soft);font-weight:700;display:flex;align-items:center;gap:5px;}
+  .care-item .val{font-size:.86rem;margin-top:3px;}
+
+  .sec{margin-top:18px;}
+  .sec h3{font-size:.92rem;color:var(--green-900);margin:0 0 8px;display:flex;align-items:center;gap:7px;}
+  .listrow{background:#fafdfb;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:.86rem;}
+  .listrow b{color:var(--green-700);}
+  .season-tag{display:inline-block;background:var(--green-300);color:#fff;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;margin-right:6px;}
+
+  .tips li{font-size:.86rem;margin-bottom:6px;}
+
+  .disclaimer{font-size:.74rem;color:var(--ink-soft);text-align:center;margin-top:22px;line-height:1.6;}
+
+  /* ===== History ===== */
+  #history-card{display:none;}
+  .hist-item{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;cursor:pointer;border:1px solid var(--line);margin-bottom:8px;background:#fafdfb;}
+  .hist-item:active{background:var(--green-100);}
+  .hist-item img{width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+  .hist-item .hname{font-weight:700;font-size:.9rem;}
+  .hist-item .hdate{font-size:.74rem;color:var(--ink-soft);}
+  .clear-hist{font-size:.78rem;color:var(--warn);background:none;border:none;cursor:pointer;text-decoration:underline;padding:4px;}
+
+  .error-box{display:none;background:#fde8df;color:var(--warn);padding:14px;border-radius:12px;margin-top:14px;font-size:.86rem;}
+
+  footer{text-align:center;font-size:.74rem;color:var(--ink-soft);margin-top:30px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌿 みどりのAI庭師</h1>
+  <p>植物の写真を撮るだけ。AIが種類を見分けて育て方を教えます。</p>
+</header>
+
+<div class="wrap">
+
+  <!-- API key -->
+  <details class="apikey" id="apikeyDetails">
+    <summary>
+      <span>🔑 Gemini APIキーの設定</span>
+      <span class="pill no" id="keyPill">未設定</span>
+    </summary>
+    <div class="body">
+      このアプリは Google の <b>Gemini API</b> で植物を判定します。無料枠で利用できます。<br>
+      <a class="link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio でAPIキーを取得</a> し、下に貼り付けてください。キーはこの端末の中だけに保存され、外部には送信されません。
+      <div class="keyrow">
+        <input type="password" id="apiKeyInput" placeholder="APIキーを貼り付け" autocomplete="off" />
+        <button class="btn btn-save" id="saveKeyBtn">保存</button>
+      </div>
+    </div>
+  </details>
+
+  <!-- Upload -->
+  <div class="card">
+    <h2>📷 植物の写真を選ぶ</h2>
+    <div class="btns">
+      <button class="btn btn-primary" id="cameraBtn">📸 カメラで撮影</button>
+      <button class="btn btn-ghost" id="galleryBtn">🖼 写真を選ぶ</button>
+    </div>
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden />
+    <input type="file" id="galleryInput" accept="image/*" hidden />
+
+    <div class="preview-box" id="previewBox">
+      <img id="previewImg" alt="選んだ写真" />
+    </div>
+
+    <div class="btns" id="analyzeWrap" style="display:none;margin-top:14px;">
+      <button class="btn btn-primary" id="analyzeBtn">🔍 この植物を調べる</button>
+    </div>
+    <p class="hint">花・葉・全体がはっきり写った明るい写真ほど正確に判定できます。</p>
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <!-- Loading -->
+  <div class="card" id="loading">
+    <div class="leaf-spin"></div>
+    <p id="loadingText">AIが植物を観察しています…</p>
+  </div>
+
+  <!-- Result -->
+  <div class="card" id="result"></div>
+
+  <!-- History -->
+  <div class="card" id="history-card">
+    <h2 style="justify-content:space-between;">
+      <span>🕘 調べた履歴</span>
+      <button class="clear-hist" id="clearHist">すべて消去</button>
+    </h2>
+    <div id="histList"></div>
+  </div>
+
+  <p class="disclaimer">
+    ※ AIによる判定は参考情報です。100%正確ではありません。<br>
+    食用・薬用の可否や、ペット・お子さまへの安全性は必ず専門家や信頼できる情報源でご確認ください。
+  </p>
+
+  <footer>🌱 みどりのAI庭師 &middot; Powered by Google Gemini</footer>
+</div>
+
+<script>
+/* ============ 設定 ============ */
+const MODEL = "gemini-2.5-flash";
+const LS_KEY = "garden_gemini_key";
+const LS_HIST = "garden_history";
+
+/* ============ 要素 ============ */
+const $ = id => document.getElementById(id);
+const apiKeyInput = $("apiKeyInput");
+let currentImage = null; // {dataUrl, base64, mime}
+
+/* ============ APIキー管理 ============ */
+function loadKey(){
+  const k = localStorage.getItem(LS_KEY) || "";
+  if(k){
+    apiKeyInput.value = k;
+    $("keyPill").textContent = "設定済み";
+    $("keyPill").className = "pill ok";
+  }else{
+    $("keyPill").textContent = "未設定";
+    $("keyPill").className = "pill no";
+    $("apikeyDetails").open = true;
+  }
+}
+$("saveKeyBtn").addEventListener("click", ()=>{
+  const k = apiKeyInput.value.trim();
+  if(!k){ alert("APIキーを入力してください"); return; }
+  localStorage.setItem(LS_KEY, k);
+  loadKey();
+  $("apikeyDetails").open = false;
+});
+
+/* ============ 写真の選択 ============ */
+$("cameraBtn").addEventListener("click", ()=> $("cameraInput").click());
+$("galleryBtn").addEventListener("click", ()=> $("galleryInput").click());
+$("cameraInput").addEventListener("change", e=> handleFile(e.target.files[0]));
+$("galleryInput").addEventListener("change", e=> handleFile(e.target.files[0]));
+
+function handleFile(file){
+  if(!file) return;
+  resizeImage(file, 1024, (dataUrl)=>{
+    currentImage = {
+      dataUrl,
+      base64: dataUrl.split(",")[1],
+      mime: "image/jpeg"
+    };
+    $("previewImg").src = dataUrl;
+    $("previewBox").style.display = "block";
+    $("analyzeWrap").style.display = "flex";
+    $("result").style.display = "none";
+    $("errorBox").style.display = "none";
+    $("previewBox").scrollIntoView({behavior:"smooth", block:"center"});
+  });
+}
+
+// 画像を縮小してJPEGに変換（通信量＆速度のため）
+function resizeImage(file, maxSize, cb){
+  const img = new Image();
+  const reader = new FileReader();
+  reader.onload = e=>{ img.src = e.target.result; };
+  img.onload = ()=>{
+    let {width, height} = img;
+    if(width > height && width > maxSize){ height = height*maxSize/width; width = maxSize; }
+    else if(height >= width && height > maxSize){ width = width*maxSize/height; height = maxSize; }
+    const c = document.createElement("canvas");
+    c.width = width; c.height = height;
+    c.getContext("2d").drawImage(img, 0, 0, width, height);
+    cb(c.toDataURL("image/jpeg", 0.85));
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ============ Gemini 呼び出し ============ */
+const RESPONSE_SCHEMA = {
+  type:"OBJECT",
+  properties:{
+    isPlant:{type:"BOOLEAN", description:"写真に植物が写っているか"},
+    commonName:{type:"STRING", description:"植物の和名（日本語）"},
+    scientificName:{type:"STRING", description:"学名"},
+    confidence:{type:"STRING", description:"識別の確度。高 / 中 / 低 のいずれか"},
+    difficulty:{type:"STRING", description:"育てやすさ。初心者向け / 中級者向け / 上級者向け のいずれか"},
+    description:{type:"STRING", description:"植物の特徴の簡単な説明（2〜3文）"},
+    care:{
+      type:"OBJECT",
+      properties:{
+        water:{type:"STRING", description:"水やりの頻度・方法"},
+        sunlight:{type:"STRING", description:"日当たり・置き場所"},
+        temperature:{type:"STRING", description:"適温・耐寒/耐暑性"},
+        soil:{type:"STRING", description:"適した土・用土"},
+        fertilizer:{type:"STRING", description:"肥料の与え方"},
+        pruning:{type:"STRING", description:"剪定・お手入れ"}
+      }
+    },
+    seasonalCare:{
+      type:"ARRAY",
+      items:{type:"OBJECT", properties:{
+        season:{type:"STRING", description:"春/夏/秋/冬"},
+        task:{type:"STRING", description:"その季節のお世話"}
+      }}
+    },
+    commonProblems:{
+      type:"ARRAY",
+      items:{type:"OBJECT", properties:{
+        problem:{type:"STRING", description:"よくあるトラブル・病害虫"},
+        solution:{type:"STRING", description:"対処法"}
+      }}
+    },
+    tips:{type:"ARRAY", items:{type:"STRING"}, description:"育てるコツ"}
+  },
+  required:["isPlant","commonName","care"]
+};
+
+const PROMPT = `あなたは経験豊富なガーデニングの専門家です。この写真に写っている植物を特定し、日本の気候・住環境を前提に、初心者にもわかる日本語で詳しい育て方を教えてください。
+- 植物が特定できない、または植物が写っていない場合は isPlant を false にし、commonName に「植物を特定できませんでした」と入れてください。
+- できる限り具体的に（数値・頻度・季節を含めて）記述してください。
+- すべて自然な日本語で回答してください。`;
+
+$("analyzeBtn").addEventListener("click", analyze);
+
+async function analyze(){
+  const key = localStorage.getItem(LS_KEY);
+  if(!key){
+    showError("先にGemini APIキーを設定してください。上の「🔑 APIキーの設定」を開いてください。");
+    $("apikeyDetails").open = true;
+    return;
+  }
+  if(!currentImage){ showError("写真を選んでください。"); return; }
+
+  $("errorBox").style.display = "none";
+  $("result").style.display = "none";
+  $("loading").style.display = "block";
+  $("analyzeBtn").disabled = true;
+  cycleLoadingText();
+  $("loading").scrollIntoView({behavior:"smooth", block:"center"});
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${encodeURIComponent(key)}`;
+  const body = {
+    contents:[{ parts:[
+      {text: PROMPT},
+      {inline_data:{mime_type: currentImage.mime, data: currentImage.base64}}
+    ]}],
+    generationConfig:{
+      responseMimeType:"application/json",
+      responseSchema: RESPONSE_SCHEMA,
+      temperature:0.4
+    }
+  };
+
+  try{
+    const res = await fetch(url, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(body)
+    });
+    if(!res.ok){
+      const errTxt = await res.text();
+      if(res.status===400 && errTxt.includes("API_KEY")) throw new Error("APIキーが無効です。正しいキーを設定してください。");
+      if(res.status===429) throw new Error("利用上限に達しました。しばらく待ってから再度お試しください。");
+      throw new Error("AIへの接続に失敗しました（"+res.status+"）。");
+    }
+    const json = await res.json();
+    const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
+    if(!text) throw new Error("AIから回答を取得できませんでした。別の写真でお試しください。");
+    const data = JSON.parse(text);
+    renderResult(data);
+    if(data.isPlant !== false){ saveHistory(data); }
+  }catch(err){
+    showError(err.message || "エラーが発生しました。");
+  }finally{
+    stopLoadingText();
+    $("loading").style.display = "none";
+    $("analyzeBtn").disabled = false;
+  }
+}
+
+/* ============ ローディング演出 ============ */
+const loadMsgs = ["AIが植物を観察しています…","葉や花の特徴を分析中…","育て方の情報をまとめています…","もうすぐ完了します🌱"];
+let loadTimer = null, loadIdx = 0;
+function cycleLoadingText(){
+  loadIdx = 0; $("loadingText").textContent = loadMsgs[0];
+  loadTimer = setInterval(()=>{
+    loadIdx = (loadIdx+1)%loadMsgs.length;
+    $("loadingText").textContent = loadMsgs[loadIdx];
+  }, 1800);
+}
+function stopLoadingText(){ if(loadTimer) clearInterval(loadTimer); }
+
+/* ============ 結果表示 ============ */
+function esc(s){ return (s??"").toString().replace(/[&<>]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+function renderResult(d){
+  const box = $("result");
+  if(d.isPlant === false){
+    box.innerHTML = `<div class="plant-head"><div class="name">🤔 植物を特定できませんでした</div></div>
+      <div class="desc">${esc(d.description)||"植物がはっきり写った、明るい写真でもう一度お試しください。花や葉のアップが効果的です。"}</div>`;
+    box.style.display = "block";
+    box.scrollIntoView({behavior:"smooth", block:"start"});
+    return;
+  }
+
+  const care = d.care || {};
+  const careItem = (icon,lbl,val)=> val ? `<div class="care-item"><div class="lbl">${icon} ${lbl}</div><div class="val">${esc(val)}</div></div>` : "";
+
+  let seasonHtml = "";
+  if(Array.isArray(d.seasonalCare) && d.seasonalCare.length){
+    seasonHtml = `<div class="sec"><h3>📅 季節ごとのお世話</h3>` +
+      d.seasonalCare.map(s=>`<div class="listrow"><span class="season-tag">${esc(s.season)}</span>${esc(s.task)}</div>`).join("") +
+      `</div>`;
+  }
+  let probHtml = "";
+  if(Array.isArray(d.commonProblems) && d.commonProblems.length){
+    probHtml = `<div class="sec"><h3>🩺 よくあるトラブルと対処</h3>` +
+      d.commonProblems.map(p=>`<div class="listrow"><b>${esc(p.problem)}</b><br>${esc(p.solution)}</div>`).join("") +
+      `</div>`;
+  }
+  let tipsHtml = "";
+  if(Array.isArray(d.tips) && d.tips.length){
+    tipsHtml = `<div class="sec"><h3>💡 育てるコツ</h3><ul class="tips">` +
+      d.tips.map(t=>`<li>${esc(t)}</li>`).join("") + `</ul></div>`;
+  }
+
+  const conf = d.confidence ? `<span class="badge conf">確度：${esc(d.confidence)}</span>` : "";
+  const diff = d.difficulty ? `<span class="badge diff">${esc(d.difficulty)}</span>` : "";
+
+  box.innerHTML = `
+    <div class="plant-head">
+      <div class="name">🌷 ${esc(d.commonName)}</div>
+      ${d.scientificName?`<div class="sci">${esc(d.scientificName)}</div>`:""}
+      <div class="badges">${diff}${conf}</div>
+    </div>
+    ${d.description?`<div class="desc">${esc(d.description)}</div>`:""}
+    <div class="sec"><h3>🌿 基本のお世話</h3>
+      <div class="care-grid">
+        ${careItem("💧","水やり",care.water)}
+        ${careItem("☀️","日当たり",care.sunlight)}
+        ${careItem("🌡","温度",care.temperature)}
+        ${careItem("🪴","土",care.soil)}
+        ${careItem("🧪","肥料",care.fertilizer)}
+        ${careItem("✂️","剪定",care.pruning)}
+      </div>
+    </div>
+    ${seasonHtml}${probHtml}${tipsHtml}
+    <div class="btns" style="margin-top:18px;">
+      <button class="btn btn-ghost" onclick="window.scrollTo({top:0,behavior:'smooth'})">📷 別の植物を調べる</button>
+    </div>`;
+  box.style.display = "block";
+  box.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function showError(msg){
+  const e = $("errorBox");
+  e.textContent = "⚠️ " + msg;
+  e.style.display = "block";
+  e.scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+/* ============ 履歴 ============ */
+function getHistory(){ try{ return JSON.parse(localStorage.getItem(LS_HIST)||"[]"); }catch{ return []; } }
+function saveHistory(d){
+  const hist = getHistory();
+  hist.unshift({
+    name: d.commonName,
+    img: currentImage.dataUrl,
+    date: new Date().toLocaleDateString("ja-JP",{month:"long",day:"numeric"}),
+    data: d
+  });
+  localStorage.setItem(LS_HIST, JSON.stringify(hist.slice(0,12)));
+  renderHistory();
+}
+function renderHistory(){
+  const hist = getHistory();
+  if(!hist.length){ $("history-card").style.display = "none"; return; }
+  $("history-card").style.display = "block";
+  $("histList").innerHTML = hist.map((h,i)=>`
+    <div class="hist-item" data-i="${i}">
+      <img src="${h.img}" alt="">
+      <div><div class="hname">${esc(h.name)}</div><div class="hdate">${esc(h.date)}</div></div>
+    </div>`).join("");
+  document.querySelectorAll(".hist-item").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const h = getHistory()[el.dataset.i];
+      currentImage = {dataUrl:h.img};
+      $("previewImg").src = h.img;
+      $("previewBox").style.display = "block";
+      $("analyzeWrap").style.display = "none";
+      renderResult(h.data);
+    });
+  });
+}
+$("clearHist").addEventListener("click", ()=>{
+  if(confirm("履歴をすべて消去しますか？")){
+    localStorage.removeItem(LS_HIST);
+    renderHistory();
+  }
+});
+
+/* ============ 初期化 ============ */
+loadKey();
+renderHistory();
+</script>
+</body>
+</html>

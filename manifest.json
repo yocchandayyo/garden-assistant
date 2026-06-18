@@ -1,0 +1,17 @@
+{
+  "name": "みどりのAI庭師",
+  "short_name": "AI庭師",
+  "description": "写真で植物を見分けて、育て方を日本語で教えてくれるガーデニングアシスタント",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f9f4",
+  "theme_color": "#2f7a4d",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
