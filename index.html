@@ -75,8 +75,9 @@
     border-bottom:1px solid var(--glass-brd);
     position:sticky; top:0; z-index:30;
   }
-  .logo{display:inline-flex;align-items:center;gap:9px;justify-content:center;}
+  .logo{display:inline-flex;align-items:center;gap:10px;justify-content:center;}
   .logo svg{width:30px;height:30px;flex-shrink:0;}
+  .logo .logo-mark{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:block;box-shadow:0 2px 9px rgba(35,74,54,.18);}
   header h1{
     margin:0;font-family:var(--serif);font-weight:700;
     font-size:1.5rem;letter-spacing:.12em;color:var(--green-900);
@@ -326,18 +327,61 @@
   .slider::before{content:"";position:absolute;height:24px;width:24px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
   .switch input:checked + .slider{background:var(--aqua);}
   .switch input:checked + .slider::before{transform:translateX(20px);}
+
+  /* ===== SVG line icons ===== */
+  .ic{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.17em;flex-shrink:0;
+    fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .card h2 .ic{width:1.18em;height:1.18em;color:var(--green-700);}
+  .sec h3 .ic{width:1.1em;height:1.1em;color:var(--green-700);}
+  .care-item .lbl .ic{width:1.15em;height:1.15em;}
+  .plant-head .name .ic{width:1.05em;height:1.05em;color:var(--green-500);vertical-align:-.1em;}
+  .empty .big .ic{width:2.6rem;height:2.6rem;color:var(--green-300);stroke-width:1.5;}
+  .btn .ic{width:1.2em;height:1.2em;}
+  .badge .ic{width:1.05em;height:1.05em;vertical-align:-.16em;}
+  nav.tabbar button .tic{width:26px;height:26px;display:block;
+    fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:stroke-width .2s;}
+  nav.tabbar button.active .tic{stroke-width:2;}
 </style>
 </head>
 <body>
 
+<!-- ===== SVG アイコン定義（和モダン・統一ライン） ===== -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.2"/><path d="M14.6 14.6 20.6 20.6"/><path d="M10 7.4c-2.3.6-2.3 3.8 0 5.4 2.3-1.6 2.3-4.8 0-5.4Z"/><path d="M10 8.2v4.4"/></symbol>
+    <symbol id="i-diagnose" viewBox="0 0 24 24"><path d="M12 21C6.6 17 6.6 8.6 12 3.6 17.4 8.6 17.4 17 12 21Z"/><path d="M8.4 12.6h2l1-2.2 1.6 4 1-1.8h1.6"/></symbol>
+    <symbol id="i-garden" viewBox="0 0 24 24"><path d="M7.6 13.2h8.8l-1.2 6.4a1 1 0 0 1-1 .9H9.8a1 1 0 0 1-1-.9Z"/><path d="M12 13.2C9.5 11.7 8.6 8.2 9.6 6 11.4 7.2 12 10.6 12 13.2"/><path d="M12 13.2c2.5-1.5 3.4-5 2.4-7.2C12.6 7.2 12 10.6 12 13.2"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5.6" width="16" height="14.4" rx="2.2"/><path d="M4 9.6h16"/><path d="M8.4 3.6V7M15.6 3.6V7"/><path d="M12 13.4s-1.9 2-1.9 3.2a1.9 1.9 0 0 0 3.8 0c0-1.2-1.9-3.2-1.9-3.2Z"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8.7a2 2 0 0 1 2-2h2L9.3 4.7h5.4L16 6.7h2a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><circle cx="12" cy="12.4" r="3.3"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2.2"/><circle cx="9" cy="10" r="1.6"/><path d="M5 17l5-5 3 3 3-3 3 3"/></symbol>
+    <symbol id="i-water" viewBox="0 0 24 24"><path d="M12 3.2S6 10 6 14.2a6 6 0 0 0 12 0C18 10 12 3.2 12 3.2Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.9"/><path d="M12 2.6V5M12 19v2.4M2.6 12H5M19 12h2.4M5.3 5.3 7 7M17 17l1.7 1.7M18.7 5.3 17 7M7 17l-1.7 1.7"/></symbol>
+    <symbol id="i-temp" viewBox="0 0 24 24"><path d="M14 5a2 2 0 0 0-4 0v9a3.5 3.5 0 1 0 4 0Z"/><path d="M12 14V8.5"/></symbol>
+    <symbol id="i-soil" viewBox="0 0 24 24"><path d="M6 9.2h12l-1.4 9.4a1.2 1.2 0 0 1-1.2 1H8.6a1.2 1.2 0 0 1-1.2-1Z"/><path d="M8 12.6q4 1.6 8 0"/></symbol>
+    <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9.5 3.2h5"/><path d="M10.6 3.2V9L5.9 18a1.8 1.8 0 0 0 1.6 2.7h9a1.8 1.8 0 0 0 1.6-2.7L13.4 9V3.2"/><path d="M8.2 14h7.6"/></symbol>
+    <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="7" cy="7" r="2.3"/><circle cx="7" cy="17" r="2.3"/><path d="M8.8 8.6 19 16M8.8 15.4 19 8"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19C5 11 11 5 19 5 19 13 13 19 5 19Z"/><path d="M5 19C9 15 13 11 17 7"/></symbol>
+    <symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 21V11"/><path d="M12 13C9 13 6.6 11 6.6 8 9.6 8 12 10 12 13Z"/><path d="M12 12c0-2.5 2-5 5-5 0 3-2 5-5 5Z"/><path d="M8 21h8"/></symbol>
+    <symbol id="i-memo" viewBox="0 0 24 24"><path d="M5 19v-3.5L15.5 5a2 2 0 0 1 3 3L8 18.5Z"/><path d="M13.5 7 16.5 10"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6C10 4.6 6.6 4.6 4.6 5.6V18C6.6 17 10 17 12 18.5 14 17 17.4 17 19.4 18V5.6C17.4 4.6 14 4.6 12 6Z"/><path d="M12 6v12.5"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M5 7h9M18.5 7H19"/><circle cx="16" cy="7" r="2"/><path d="M5 12h3M12 12h7"/><circle cx="10" cy="12" r="2"/><path d="M5 17h9M18.5 17H19"/><circle cx="16" cy="17" r="2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6.5 17S8 15.5 8 11.5a4 4 0 0 1 8 0c0 4 1.5 5.5 1.5 5.5Z"/><path d="M10.2 20a1.8 1.8 0 0 0 3.6 0"/><path d="M12 5V3.6"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 5.6A1.6 1.6 0 0 1 6.6 4H15l4 4v10.4A1.6 1.6 0 0 1 17.4 20H6.6A1.6 1.6 0 0 1 5 18.4Z"/><path d="M8 4v4h7V4"/><rect x="8" y="12" width="8" height="5"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 3.6V13"/><path d="M8 7l4-3.4L16 7"/><path d="M4.6 14v4a1.5 1.5 0 0 0 1.5 1.5h11.8a1.5 1.5 0 0 0 1.5-1.5v-4"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3.6V13"/><path d="M8 9.4 12 13l4-3.6"/><path d="M4.6 14v4a1.5 1.5 0 0 0 1.5 1.5h11.8a1.5 1.5 0 0 0 1.5-1.5v-4"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3.6"/><path d="M10.6 10.6 19 19M16 16l2-2M13.6 13.6l2-2"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14"/><path d="M9 7V5h6v2"/><path d="M6.6 7 7.6 19a1.3 1.3 0 0 0 1.3 1.2h6.2a1.3 1.3 0 0 0 1.3-1.2L17.4 7"/><path d="M10 10.5V17M14 10.5V17"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 19s-7.5-5-7.5-10.2A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7.5 1.8C19.5 14 12 19 12 19Z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.6 19 6v5c0 5-3.5 8-7 9.5C8.5 19 5 16 5 11V6Z"/><path d="M9.2 11.8 11.2 13.8 15 10"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 16c-2-1.5-3-3.5-3-5.7A6 6 0 0 1 18 10.3c0 2.2-1 4.2-3 5.7Z"/><path d="M9.5 16v2.5h5V16"/><path d="M10.6 20.6h2.8"/></symbol>
+    <symbol id="i-cross" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 8.4v7.2M8.4 12h7.2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 21 19H3Z"/><path d="M12 10v4"/><path d="M12 16.6h.01"/></symbol>
+  </defs>
+</svg>
+
 <header>
   <div class="logo">
-    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="24" cy="24" r="22" fill="#e4f0e9"/>
-      <path d="M24 37c0-7-.2-11-5-15-4-3.4-9-3.2-9-3.2s-.2 6 4 10.2c3.2 3.2 7 4 10 4z" fill="#52996f"/>
-      <path d="M24 33c0-6 1-10.2 6-13.2 4-2.4 8-2 8-2s-.4 6-4 9c-3.2 2.8-7 4-10 4z" fill="#3f7d5b"/>
-      <path d="M24 39V22" stroke="#234a36" stroke-width="2.4" stroke-linecap="round"/>
-    </svg>
+    <img class="logo-mark" src="logo.png" alt="プラログ" width="32" height="32" />
     <h1 id="appTitle">プラログ</h1>
   </div>
   <p id="appSub">植物を、見分けて・育てて・記録する。</p>
@@ -349,7 +393,7 @@
   <section class="view active" id="view-identify">
     <details class="apikey" id="apikeyDetails">
       <summary>
-        <span>🔑 Gemini APIキーの設定</span>
+        <span><svg class="ic"><use href="#i-key"></use></svg> Gemini APIキーの設定</span>
         <span class="pill no" id="keyPill">未設定</span>
       </summary>
       <div class="body">
@@ -363,10 +407,10 @@
     </details>
 
     <div class="card">
-      <h2>📷 植物の写真を選ぶ</h2>
+      <h2><svg class="ic"><use href="#i-camera"></use></svg> 植物の写真を選ぶ</h2>
       <div class="btns">
-        <button class="btn btn-primary" id="cameraBtn">📸 カメラで撮影</button>
-        <button class="btn btn-ghost" id="galleryBtn">🖼 写真を選ぶ</button>
+        <button class="btn btn-primary" id="cameraBtn"><svg class="ic"><use href="#i-camera"></use></svg> カメラで撮影</button>
+        <button class="btn btn-ghost" id="galleryBtn"><svg class="ic"><use href="#i-image"></use></svg> 写真を選ぶ</button>
       </div>
       <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden />
       <input type="file" id="galleryInput" accept="image/*" hidden />
@@ -376,7 +420,7 @@
       </div>
 
       <div class="btns" id="analyzeWrap" style="display:none;margin-top:14px;">
-        <button class="btn btn-primary" id="analyzeBtn">🔍 この植物を調べる</button>
+        <button class="btn btn-primary" id="analyzeBtn"><svg class="ic"><use href="#i-search"></use></svg> この植物を調べる</button>
       </div>
       <p class="hint">花・葉・全体がはっきり写った明るい写真ほど正確に判定できます。</p>
       <div class="error-box" id="errorBox"></div>
@@ -398,11 +442,11 @@
   <!-- ============ VIEW: 診断 ============ -->
   <section class="view" id="view-diagnose">
     <div class="card">
-      <h2>🩺 元気がないか相談</h2>
+      <h2><svg class="ic"><use href="#i-diagnose"></use></svg> 元気がないか相談</h2>
       <p class="hint" style="text-align:left;margin:0 2px 12px;">葉の変色・しおれ・斑点・虫など、気になる部分がはっきり写った写真を選んでください。</p>
       <div class="btns">
-        <button class="btn btn-primary" id="diagCameraBtn">📸 カメラで撮影</button>
-        <button class="btn btn-ghost" id="diagGalleryBtn">🖼 写真を選ぶ</button>
+        <button class="btn btn-primary" id="diagCameraBtn"><svg class="ic"><use href="#i-camera"></use></svg> カメラで撮影</button>
+        <button class="btn btn-ghost" id="diagGalleryBtn"><svg class="ic"><use href="#i-image"></use></svg> 写真を選ぶ</button>
       </div>
       <input type="file" id="diagCameraInput" accept="image/*" capture="environment" hidden />
       <input type="file" id="diagGalleryInput" accept="image/*" hidden />
@@ -417,7 +461,7 @@
       </div>
 
       <div class="btns" id="diagAnalyzeWrap" style="display:none;margin-top:14px;">
-        <button class="btn btn-primary" id="diagAnalyzeBtn">🩺 この状態を診断する</button>
+        <button class="btn btn-primary" id="diagAnalyzeBtn"><svg class="ic"><use href="#i-diagnose"></use></svg> この状態を診断する</button>
       </div>
       <div class="error-box" id="diagErrorBox"></div>
     </div>
@@ -439,30 +483,30 @@
   <section class="view" id="view-garden">
     <div class="card">
       <h2 style="justify-content:space-between;">
-        <span>🪴 マイガーデン</span>
+        <span><svg class="ic"><use href="#i-garden"></use></svg> マイガーデン</span>
         <button class="btn btn-ghost btn-sm" id="addManualBtn">＋ 手動で追加</button>
       </h2>
       <div id="gardenList"></div>
     </div>
 
     <div class="card">
-      <h2>⚙️ データと通知</h2>
+      <h2><svg class="ic"><use href="#i-settings"></use></svg> データと通知</h2>
       <div class="set-row">
         <div>
-          <div class="set-title">🔔 お世話の通知</div>
+          <div class="set-title">お世話の通知</div>
           <div class="set-sub">水やり・肥料の予定日にお知らせ</div>
         </div>
         <label class="switch"><input type="checkbox" id="notifToggle"><span class="slider"></span></label>
       </div>
       <div class="set-row">
         <div>
-          <div class="set-title">💾 バックアップ</div>
+          <div class="set-title">バックアップ</div>
           <div class="set-sub">記録をファイルに保存／別の端末へ復元</div>
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:4px;">
-        <button class="btn btn-ghost btn-sm" id="exportBtn" style="flex:1;">⬆️ 書き出す</button>
-        <button class="btn btn-ghost btn-sm" id="importBtn" style="flex:1;">⬇️ 読み込む</button>
+        <button class="btn btn-ghost btn-sm" id="exportBtn" style="flex:1;"><svg class="ic"><use href="#i-up"></use></svg> 書き出す</button>
+        <button class="btn btn-ghost btn-sm" id="importBtn" style="flex:1;"><svg class="ic"><use href="#i-down"></use></svg> 読み込む</button>
       </div>
       <input type="file" id="importInput" accept="application/json,.json" hidden />
       <p class="hint" style="text-align:left;margin:10px 2px 0;">※ データはこの端末の中だけに保存されます。機種変更や履歴の削除に備えて、ときどき書き出しておくと安心です。</p>
@@ -472,11 +516,11 @@
   <!-- ============ VIEW: カレンダー ============ -->
   <section class="view" id="view-calendar">
     <div class="card">
-      <h2>💧 今日の水やり</h2>
+      <h2><svg class="ic"><use href="#i-water"></use></svg> 今日の水やり</h2>
       <div id="todayWater" class="today-water"></div>
     </div>
     <div class="card">
-      <h2>🧪 今日の肥料</h2>
+      <h2><svg class="ic"><use href="#i-flask"></use></svg> 今日の肥料</h2>
       <div id="todayFert" class="today-water"></div>
     </div>
     <div class="card">
@@ -516,7 +560,7 @@
       <div class="field-label">植物の名前</div>
       <input type="text" id="mName" placeholder="例：パキラ、モンステラ" />
       <div class="field-label">写真（任意）</div>
-      <button class="btn btn-ghost btn-sm" id="mPhotoBtn" style="width:100%;">🖼 写真を選ぶ</button>
+      <button class="btn btn-ghost btn-sm" id="mPhotoBtn" style="width:100%;"><svg class="ic"><use href="#i-image"></use></svg> 写真を選ぶ</button>
       <input type="file" id="mPhotoInput" accept="image/*" hidden />
       <div class="preview-box" id="mPreviewBox"><img id="mPreviewImg" alt=""></div>
       <div class="field-label">水やりの間隔（日数）</div>
@@ -534,10 +578,10 @@
 
 <!-- ============ ボトムナビ ============ -->
 <nav class="tabbar">
-  <button data-tab="identify" class="active"><span class="ic">🔍</span>調べる</button>
-  <button data-tab="diagnose"><span class="ic">🩺</span>診断</button>
-  <button data-tab="garden"><span class="ic">🪴</span>ガーデン</button>
-  <button data-tab="calendar"><span class="ic">📅</span>カレンダー</button>
+  <button data-tab="identify" class="active"><svg class="tic"><use href="#i-search"></use></svg>調べる</button>
+  <button data-tab="diagnose"><svg class="tic"><use href="#i-diagnose"></use></svg>診断</button>
+  <button data-tab="garden"><svg class="tic"><use href="#i-garden"></use></svg>ガーデン</button>
+  <button data-tab="calendar"><svg class="tic"><use href="#i-calendar"></use></svg>カレンダー</button>
 </nav>
 
 <!-- 成長記録用の入力（共有） -->
@@ -552,6 +596,7 @@ const LS_NOTIF = "garden_notif";        // "1" = 通知ON
 const LS_LASTNOTIF = "garden_last_notif"; // 最後に通知した日付キー
 
 const $ = id => document.getElementById(id);
+const ic = n => `<svg class="ic" aria-hidden="true"><use href="#i-${n}"></use></svg>`;
 let currentImage = null;   // 調べる用 {dataUrl, base64, mime}
 let lastResult = null;     // {data, photoThumb}
 let diagImage = null;      // 診断用 {dataUrl, base64, mime}
@@ -728,16 +773,16 @@ function esc(s){ return (s??"").toString().replace(/[&<>]/g,c=>({"&":"&amp;","<"
 function careHtml(d){
   const care=d.care||{};
   const careItem=(icon,lbl,val)=> val?`<div class="care-item"><div class="lbl">${icon} ${lbl}</div><div class="val">${esc(val)}</div></div>`:"";
-  let h=`<div class="sec"><h3>🌿 基本のお世話</h3><div class="care-grid">
-    ${careItem("💧","水やり",care.water)}${careItem("☀️","日当たり",care.sunlight)}
-    ${careItem("🌡","温度",care.temperature)}${careItem("🪴","土",care.soil)}
-    ${careItem("🧪","肥料",care.fertilizer)}${careItem("✂️","剪定",care.pruning)}</div></div>`;
+  let h=`<div class="sec"><h3>${ic("leaf")} 基本のお世話</h3><div class="care-grid">
+    ${careItem(ic("water"),"水やり",care.water)}${careItem(ic("sun"),"日当たり",care.sunlight)}
+    ${careItem(ic("temp"),"温度",care.temperature)}${careItem(ic("soil"),"土",care.soil)}
+    ${careItem(ic("flask"),"肥料",care.fertilizer)}${careItem(ic("scissors"),"剪定",care.pruning)}</div></div>`;
   if(Array.isArray(d.seasonalCare)&&d.seasonalCare.length)
-    h+=`<div class="sec"><h3>📅 季節ごとのお世話</h3>`+d.seasonalCare.map(s=>`<div class="listrow"><span class="season-tag">${esc(s.season)}</span>${esc(s.task)}</div>`).join("")+`</div>`;
+    h+=`<div class="sec"><h3>${ic("calendar")} 季節ごとのお世話</h3>`+d.seasonalCare.map(s=>`<div class="listrow"><span class="season-tag">${esc(s.season)}</span>${esc(s.task)}</div>`).join("")+`</div>`;
   if(Array.isArray(d.commonProblems)&&d.commonProblems.length)
-    h+=`<div class="sec"><h3>🩺 よくあるトラブルと対処</h3>`+d.commonProblems.map(p=>`<div class="listrow"><b>${esc(p.problem)}</b><br>${esc(p.solution)}</div>`).join("")+`</div>`;
+    h+=`<div class="sec"><h3>${ic("alert")} よくあるトラブルと対処</h3>`+d.commonProblems.map(p=>`<div class="listrow"><b>${esc(p.problem)}</b><br>${esc(p.solution)}</div>`).join("")+`</div>`;
   if(Array.isArray(d.tips)&&d.tips.length)
-    h+=`<div class="sec"><h3>💡 育てるコツ</h3><ul class="tips">`+d.tips.map(t=>`<li>${esc(t)}</li>`).join("")+`</ul></div>`;
+    h+=`<div class="sec"><h3>${ic("bulb")} 育てるコツ</h3><ul class="tips">`+d.tips.map(t=>`<li>${esc(t)}</li>`).join("")+`</ul></div>`;
   return h;
 }
 
@@ -751,19 +796,19 @@ function renderResult(d){
   }
   const conf=d.confidence?`<span class="badge conf">確度：${esc(d.confidence)}</span>`:"";
   const diff=d.difficulty?`<span class="badge diff">${esc(d.difficulty)}</span>`:"";
-  const wi=d.waterIntervalDays?`<span class="badge">💧 約${d.waterIntervalDays}日ごと</span>`:"";
-  const fi=d.fertilizerIntervalDays?`<span class="badge" style="background:#ece4fb;color:#7b54c9;">🧪 約${d.fertilizerIntervalDays}日ごと</span>`:"";
+  const wi=d.waterIntervalDays?`<span class="badge" style="background:var(--aqua-100);color:var(--aqua);">${ic("water")} 約${d.waterIntervalDays}日ごと</span>`:"";
+  const fi=d.fertilizerIntervalDays?`<span class="badge" style="background:var(--fuji-100);color:var(--fuji);">${ic("flask")} 約${d.fertilizerIntervalDays}日ごと</span>`:"";
   box.innerHTML=`
     <div class="plant-head">
-      <div class="name">🌷 ${esc(d.commonName)}</div>
+      <div class="name">${ic("leaf")} ${esc(d.commonName)}</div>
       ${d.scientificName?`<div class="sci">${esc(d.scientificName)}</div>`:""}
       <div class="badges">${diff}${conf}${wi}${fi}</div>
     </div>
     ${d.description?`<div class="desc">${esc(d.description)}</div>`:""}
     ${careHtml(d)}
     <div class="btns" style="margin-top:18px;">
-      <button class="btn btn-primary" id="registerBtn">🪴 マイガーデンに登録</button>
-      <button class="btn btn-ghost" onclick="window.scrollTo({top:0,behavior:'smooth'})">📷 別の植物を調べる</button>
+      <button class="btn btn-primary" id="registerBtn">${ic("garden")} マイガーデンに登録</button>
+      <button class="btn btn-ghost" onclick="window.scrollTo({top:0,behavior:'smooth'})">${ic("camera")} 別の植物を調べる</button>
     </div>`;
   box.style.display="block"; box.scrollIntoView({behavior:"smooth",block:"start"});
   $("registerBtn").addEventListener("click", registerFromResult);
@@ -798,13 +843,13 @@ function renderGarden(){
   const arr=getPlants();
   const list=$("gardenList");
   if(!arr.length){
-    list.innerHTML=`<div class="empty"><span class="big">🪴</span>まだ植物が登録されていません。<br>「調べる」で植物を判定して登録するか、<br>「＋ 手動で追加」から登録できます。</div>`;
+    list.innerHTML=`<div class="empty"><span class="big">${ic("garden")}</span>まだ植物が登録されていません。<br>「調べる」で植物を判定して登録するか、<br>「＋ 手動で追加」から登録できます。</div>`;
     return;
   }
   list.innerHTML=`<div class="garden-grid">`+arr.map(p=>{
     const st=waterStatus(p);
-    const wb=`<span class="water-badge ${st.due?'due':'ok'}">💧 ${st.text}</span>`;
-    const img=p.photo?`<img class="thumb" src="${p.photo}" alt="">`:`<div class="thumb" style="display:flex;align-items:center;justify-content:center;font-size:2.4rem;">🌱</div>`;
+    const wb=`<span class="water-badge ${st.due?'due':'ok'}">${ic("water")} ${st.text}</span>`;
+    const img=p.photo?`<img class="thumb" src="${p.photo}" alt="">`:`<div class="thumb" style="display:flex;align-items:center;justify-content:center;font-size:2.4rem;color:var(--green-300);">${ic("sprout")}</div>`;
     return `<div class="plant-card" data-id="${p.id}">${img}<div class="pc-body"><div class="pc-name">${esc(p.name)}</div>${wb}</div></div>`;
   }).join("")+`</div>`;
   list.querySelectorAll(".plant-card").forEach(el=>el.addEventListener("click",()=>openDetail(el.dataset.id)));
@@ -835,28 +880,28 @@ function renderDetail(p){
     <div class="growth-item">
       ${g.photo?`<img src="${g.photo}" alt="">`:""}
       <div style="flex:1;">
-        <div class="gdate">📅 ${fmtJp(g.date)}</div>
+        <div class="gdate">${ic("calendar")} ${fmtJp(g.date)}</div>
         <div class="gnote">${esc(g.note)||"（メモなし）"}</div>
       </div>
-      <button class="gdel" data-gi="${i}" title="削除">🗑</button>
+      <button class="gdel" data-gi="${i}" title="削除">${ic("trash")}</button>
     </div>`).join("") : `<div style="color:var(--ink-soft);font-size:.85rem;">まだ記録がありません。写真とメモで成長を残しましょう。</div>`;
 
   $("detailBody").innerHTML=`
     ${p.photo?`<img class="ov-hero" src="${p.photo}" alt="">`:""}
     <div class="wrap">
       <div class="plant-head" style="margin-top:14px;">
-        <div class="name">🌷 ${esc(p.name)}</div>
+        <div class="name">${ic("leaf")} ${esc(p.name)}</div>
         ${p.scientificName?`<div class="sci">${esc(p.scientificName)}</div>`:""}
       </div>
 
       <!-- 水やり -->
       <div class="card">
-        <h2>💧 水やり</h2>
+        <h2>${ic("water")} 水やり</h2>
         <div class="water-stat">
           <div class="ws"><div class="num">${esc(last)}</div><div class="lbl">前回の水やり</div></div>
           <div class="ws ${st.due?'due':''}"><div class="num">${st.text}</div><div class="lbl">次の予定（${p.waterIntervalDays}日ごと）</div></div>
         </div>
-        <button class="btn btn-water" id="waterNow" style="margin-top:12px;">💧 水やりを記録する</button>
+        <button class="btn btn-water" id="waterNow" style="margin-top:12px;">${ic("water")} 水やりを記録する</button>
         <div class="field-label">水やりの間隔（日数）</div>
         <div style="display:flex;gap:8px;">
           <input type="number" id="intervalEdit" value="${p.waterIntervalDays}" min="1" max="90">
@@ -868,7 +913,7 @@ function renderDetail(p){
 
       <!-- 肥料 -->
       <div class="card">
-        <h2 style="justify-content:space-between;"><span>🧪 肥料</span>
+        <h2 style="justify-content:space-between;"><span>${ic("flask")} 肥料</span>
           <label class="switch"><input type="checkbox" id="fertToggle" ${fertEnabled(p)?"checked":""}><span class="slider"></span></label>
         </h2>
         <div id="fertBody">${fertBodyHtml}</div>
@@ -876,26 +921,26 @@ function renderDetail(p){
 
       <!-- 成長記録 -->
       <div class="card">
-        <h2 style="justify-content:space-between;"><span>🌱 成長記録</span>
+        <h2 style="justify-content:space-between;"><span>${ic("sprout")} 成長記録</span>
           <button class="btn btn-primary btn-sm" id="addGrowth">＋ 記録を追加</button></h2>
         <div id="growthList">${growthHtml}</div>
       </div>
 
       <!-- 管理メモ -->
       <div class="card">
-        <h2>📝 管理メモ</h2>
+        <h2>${ic("memo")} 管理メモ</h2>
         <textarea id="memoEdit" placeholder="置き場所・水やりのコツ・購入日など自由にメモ">${esc(p.memo||"")}</textarea>
         <button class="btn btn-save" id="saveMemo" style="margin-top:10px;">メモを保存</button>
       </div>
 
       <!-- 育て方 -->
       <div class="card">
-        <h2>📖 育て方</h2>
+        <h2>${ic("book")} 育て方</h2>
         ${p.fullData? careHtml(p.fullData) : careOnlyHtml(p.care)}
       </div>
 
       <div class="btns" style="margin:6px 0 20px;">
-        <button class="btn btn-danger" id="deletePlant">🗑 この植物を削除</button>
+        <button class="btn btn-danger" id="deletePlant">${ic("trash")} この植物を削除</button>
       </div>
     </div>`;
 
@@ -928,7 +973,7 @@ function renderDetail(p){
 function careOnlyHtml(care){
   care=care||{};
   const item=(icon,lbl,val)=>val?`<div class="care-item"><div class="lbl">${icon} ${lbl}</div><div class="val">${esc(val)}</div></div>`:"";
-  return `<div class="care-grid">${item("💧","水やり",care.water)}${item("☀️","日当たり",care.sunlight)}${item("🌡","温度",care.temperature)}${item("🪴","土",care.soil)}${item("🧪","肥料",care.fertilizer)}${item("✂️","剪定",care.pruning)}</div>`;
+  return `<div class="care-grid">${item(ic("water"),"水やり",care.water)}${item(ic("sun"),"日当たり",care.sunlight)}${item(ic("temp"),"温度",care.temperature)}${item(ic("soil"),"土",care.soil)}${item(ic("flask"),"肥料",care.fertilizer)}${item(ic("scissors"),"剪定",care.pruning)}</div>`;
 }
 
 /* 肥料カードの中身 */
@@ -944,7 +989,7 @@ function buildFertBody(p){
       <div class="ws"><div class="num">${esc(last)}</div><div class="lbl">前回の肥料</div></div>
       <div class="ws ${st.due?'fertdue':''}"><div class="num">${st.text}</div><div class="lbl">次の予定（${p.fertIntervalDays||30}日ごと）</div></div>
     </div>
-    <button class="btn btn-fert" id="fertNow" style="margin-top:12px;">🧪 肥料をあげた記録</button>
+    <button class="btn btn-fert" id="fertNow" style="margin-top:12px;">${ic("flask")} 肥料をあげた記録</button>
     <div class="field-label">肥料の間隔（日数）</div>
     <div style="display:flex;gap:8px;">
       <input type="number" id="fertIntervalEdit" value="${p.fertIntervalDays||30}" min="1" max="180">
@@ -1072,10 +1117,10 @@ function renderTodayWater(){
   const plants=getPlants();
   const due=plants.filter(p=>waterStatus(p).due);
   const box=$("todayWater");
-  if(!due.length){ box.innerHTML=`<div style="color:var(--ink-soft);font-size:.88rem;">今日水やりが必要な植物はありません 🌿</div>`; return; }
+  if(!due.length){ box.innerHTML=`<div style="color:var(--ink-soft);font-size:.88rem;">今日水やりが必要な植物はありません</div>`; return; }
   box.innerHTML=due.map(p=>{
-    const img=p.photo?`<img src="${p.photo}" alt="">`:`<div style="width:42px;height:42px;border-radius:9px;background:var(--green-100);display:flex;align-items:center;justify-content:center;">🌱</div>`;
-    return `<div class="tw-row">${img}<span class="twn">${esc(p.name)}</span><button class="btn btn-water btn-sm" data-id="${p.id}">💧 完了</button></div>`;
+    const img=p.photo?`<img src="${p.photo}" alt="">`:`<div style="width:42px;height:42px;border-radius:10px;background:var(--green-100);color:var(--green-500);display:flex;align-items:center;justify-content:center;">${ic("sprout")}</div>`;
+    return `<div class="tw-row">${img}<span class="twn">${esc(p.name)}</span><button class="btn btn-water btn-sm" data-id="${p.id}">${ic("water")} 完了</button></div>`;
   }).join("");
   box.querySelectorAll("button[data-id]").forEach(b=>b.addEventListener("click",()=>{
     updatePlant(b.dataset.id,pl=>{ pl.waterLog=pl.waterLog||[]; const tk=todayKey(); if(pl.waterLog[0]!==tk) pl.waterLog.unshift(tk); });
@@ -1087,10 +1132,10 @@ function renderTodayFert(){
   const plants=getPlants();
   const due=plants.filter(p=>fertStatus(p).due);
   const box=$("todayFert");
-  if(!due.length){ box.innerHTML=`<div style="color:var(--ink-soft);font-size:.88rem;">今日肥料が必要な植物はありません 🌿</div>`; return; }
+  if(!due.length){ box.innerHTML=`<div style="color:var(--ink-soft);font-size:.88rem;">今日肥料が必要な植物はありません</div>`; return; }
   box.innerHTML=due.map(p=>{
-    const img=p.photo?`<img src="${p.photo}" alt="">`:`<div style="width:42px;height:42px;border-radius:9px;background:var(--green-100);display:flex;align-items:center;justify-content:center;">🌱</div>`;
-    return `<div class="tw-row">${img}<span class="twn">${esc(p.name)}</span><button class="btn btn-fert btn-sm" data-id="${p.id}">🧪 完了</button></div>`;
+    const img=p.photo?`<img src="${p.photo}" alt="">`:`<div style="width:42px;height:42px;border-radius:10px;background:var(--green-100);color:var(--green-500);display:flex;align-items:center;justify-content:center;">${ic("sprout")}</div>`;
+    return `<div class="tw-row">${img}<span class="twn">${esc(p.name)}</span><button class="btn btn-fert btn-sm" data-id="${p.id}">${ic("flask")} 完了</button></div>`;
   }).join("");
   box.querySelectorAll("button[data-id]").forEach(b=>b.addEventListener("click",()=>{
     updatePlant(b.dataset.id,pl=>{ pl.fertLog=pl.fertLog||[]; const tk=todayKey(); if(pl.fertLog[0]!==tk) pl.fertLog.unshift(tk); });
@@ -1213,20 +1258,20 @@ function renderDiag(d){
     </div>
     <div class="desc">${esc(d.overall)}</div>`;
   if(score!==null){
-    h+=`<div class="sec"><h3>💚 健康度：${score}/100</h3>
+    h+=`<div class="sec"><h3>${ic("heart")} 健康度：${score}/100</h3>
       <div class="health-meter"><div class="fill" style="width:${score}%;background:${scoreColor};"></div></div></div>`;
   }
   if(Array.isArray(d.symptoms)&&d.symptoms.length)
-    h+=`<div class="sec"><h3>🔎 見られる症状</h3>`+d.symptoms.map(s=>`<div class="listrow">${esc(s)}</div>`).join("")+`</div>`;
+    h+=`<div class="sec"><h3>${ic("search")} 見られる症状</h3>`+d.symptoms.map(s=>`<div class="listrow">${esc(s)}</div>`).join("")+`</div>`;
   if(Array.isArray(d.causes)&&d.causes.length)
-    h+=`<div class="sec"><h3>🧐 考えられる原因</h3>`+d.causes.map(c=>`
+    h+=`<div class="sec"><h3>${ic("alert")} 考えられる原因</h3>`+d.causes.map(c=>`
       <div class="cause-row"><div class="ctop"><span class="cname">${esc(c.cause)}</span>${c.likelihood?`<span class="like ${likeClass(c.likelihood)}">可能性 ${esc(c.likelihood)}</span>`:""}</div>
       ${c.detail?`<div style="font-size:.84rem;margin-top:5px;color:var(--ink);">${esc(c.detail)}</div>`:""}</div>`).join("")+`</div>`;
   if(Array.isArray(d.treatment)&&d.treatment.length)
-    h+=`<div class="sec"><h3>🩹 今すぐできる対処</h3><ol class="step-list">`+d.treatment.map(t=>`<li>${esc(t)}</li>`).join("")+`</ol></div>`;
+    h+=`<div class="sec"><h3>${ic("cross")} 今すぐできる対処</h3><ol class="step-list">`+d.treatment.map(t=>`<li>${esc(t)}</li>`).join("")+`</ol></div>`;
   if(Array.isArray(d.prevention)&&d.prevention.length)
-    h+=`<div class="sec"><h3>🛡 これからの予防</h3><ul class="tips">`+d.prevention.map(t=>`<li>${esc(t)}</li>`).join("")+`</ul></div>`;
-  h+=`<div class="btns" style="margin-top:18px;"><button class="btn btn-ghost" onclick="window.scrollTo({top:0,behavior:'smooth'})">📷 別の写真で診断する</button></div>`;
+    h+=`<div class="sec"><h3>${ic("shield")} これからの予防</h3><ul class="tips">`+d.prevention.map(t=>`<li>${esc(t)}</li>`).join("")+`</ul></div>`;
+  h+=`<div class="btns" style="margin-top:18px;"><button class="btn btn-ghost" onclick="window.scrollTo({top:0,behavior:'smooth'})">${ic("camera")} 別の写真で診断する</button></div>`;
   box.innerHTML=h;
   box.style.display="block"; box.scrollIntoView({behavior:"smooth",block:"start"});
 }

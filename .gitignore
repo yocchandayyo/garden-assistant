@@ -1,0 +1,11 @@
+# APIキー・シークレット（絶対にコミットしない）
+API.txt
+germi_api.txt
+gemini_api.txt
+*.key
+.env
+
+# 開発用の中間生成物
+assets/raw/
+__pycache__/
+*.pyc
