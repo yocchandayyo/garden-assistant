@@ -3,76 +3,99 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<meta name="theme-color" content="#2f7a4d" />
-<title>みどりのAI庭師 🌿 | 写真で植物を見分けて育て方ガイド</title>
-<meta name="description" content="植物の写真を撮るだけでAIが種類を判定し、水やり・日当たり・肥料など詳しい育て方を日本語で教えてくれるガーデニングアシスタント。成長記録・水やりカレンダー付き。" />
+<meta name="theme-color" content="#e9f1ea" />
+<title>プラログ | 植物を見分けて・育てて・記録する</title>
+<meta name="description" content="写真でAIが植物を見分け、水やり・日当たり・肥料など育て方を日本語でガイド。元気がないときのAI診断、成長記録、水やり・肥料カレンダーも。和モダンなガーデニング記録アプリ「プラログ」。" />
 
 <!-- iPhone ホーム画面対応 -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="AI庭師" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="プラログ" />
 <link rel="manifest" href="manifest.json" />
 <link rel="apple-touch-icon" href="icon-180.png" />
 
+<!-- 和モダンフォント -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+
 <style>
   :root{
-    --green-900:#1b4332;
-    --green-700:#2f7a4d;
-    --green-500:#40916c;
-    --green-300:#74c69d;
-    --green-100:#d8f3dc;
-    --bg:#f4f9f4;
-    --card:#ffffff;
-    --ink:#1f2d27;
-    --ink-soft:#5a6b62;
-    --line:#e3ede6;
-    --warn:#c25a2b;
-    --due:#e8833a;
-    --shadow:0 6px 24px rgba(31,69,51,.10);
-    --radius:18px;
-    --nav-h:64px;
+    /* 苔・若竹グリーン */
+    --green-900:#234a36; --green-700:#3f7d5b; --green-500:#52996f;
+    --green-300:#9cc9b1; --green-100:#e4f0e9;
+    /* ベース / インク */
+    --bg:#eef4ef; --card:#ffffff; --ink:#283a31; --ink-soft:#6e8077;
+    --line:#d7e4dc; --warn:#c2553a; --due:#d4654a;
+    /* 和の差し色 */
+    --aqua:#2f9e8f; --aqua-100:#dcefeb;   /* 浅葱（水やり） */
+    --fuji:#8c79c9; --fuji-100:#eae4f7;    /* 藤（肥料） */
+    --ai:#3a5e86;   --ai-100:#e1e9f2;      /* 藍（情報） */
+    /* ガラス */
+    --glass:rgba(255,255,255,.60); --glass-2:rgba(255,255,255,.80);
+    --glass-brd:rgba(255,255,255,.72);
+    --shadow:0 10px 34px rgba(35,74,54,.12);
+    --radius:20px; --nav-h:66px;
+    --serif:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+    --sans:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{
-    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
-    background:var(--bg);
+    font-family:var(--sans);
     color:var(--ink);
-    line-height:1.7;
+    line-height:1.75;
     -webkit-font-smoothing:antialiased;
     padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));
+    background:
+      radial-gradient(120% 80% at 8% -8%, rgba(82,153,111,.16), transparent 55%),
+      radial-gradient(120% 80% at 100% 0%, rgba(47,158,143,.14), transparent 52%),
+      radial-gradient(90% 70% at 50% 115%, rgba(140,121,201,.10), transparent 60%),
+      linear-gradient(180deg,#eaf3ee 0%, #eef4ef 40%, #f4f1ea 100%);
+    background-attachment:fixed;
+  }
+  /* 和柄：青海波をうっすら */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:
+      radial-gradient(circle at center, transparent 24%, rgba(63,125,91,.05) 25%, rgba(63,125,91,.05) 28%, transparent 29%, transparent 36%, rgba(63,125,91,.05) 37%, rgba(63,125,91,.05) 40%, transparent 41%),
+      radial-gradient(circle at center, transparent 24%, rgba(63,125,91,.05) 25%, rgba(63,125,91,.05) 28%, transparent 29%, transparent 36%, rgba(63,125,91,.05) 37%, rgba(63,125,91,.05) 40%, transparent 41%);
+    background-size:46px 46px;
+    background-position:0 0, 23px 23px;
   }
   .wrap{max-width:560px;margin:0 auto;padding:0 16px 30px;}
 
   /* ===== Header ===== */
   header{
-    background:linear-gradient(160deg,var(--green-700),var(--green-500));
-    color:#fff;
-    padding:calc(env(safe-area-inset-top) + 18px) 16px 20px;
+    background:linear-gradient(180deg, rgba(255,255,255,.74), rgba(255,255,255,.44));
+    -webkit-backdrop-filter:blur(14px) saturate(1.3); backdrop-filter:blur(14px) saturate(1.3);
+    color:var(--ink);
+    padding:calc(env(safe-area-inset-top) + 16px) 16px 16px;
     text-align:center;
-    border-radius:0 0 26px 26px;
-    box-shadow:var(--shadow);
-    position:relative;
-    overflow:hidden;
+    border-bottom:1px solid var(--glass-brd);
+    position:sticky; top:0; z-index:30;
   }
-  header::after{
-    content:"";position:absolute;right:-30px;top:-30px;
-    width:140px;height:140px;border-radius:50%;
-    background:rgba(255,255,255,.08);
+  .logo{display:inline-flex;align-items:center;gap:9px;justify-content:center;}
+  .logo svg{width:30px;height:30px;flex-shrink:0;}
+  header h1{
+    margin:0;font-family:var(--serif);font-weight:700;
+    font-size:1.5rem;letter-spacing:.12em;color:var(--green-900);
   }
-  header h1{margin:0;font-size:1.35rem;letter-spacing:.02em;}
-  header p{margin:5px 0 0;font-size:.8rem;opacity:.92;}
+  header p{margin:6px 0 0;font-size:.78rem;color:var(--ink-soft);letter-spacing:.04em;}
 
   /* ===== Cards ===== */
   .card{
-    background:var(--card);
+    background:var(--glass);
+    -webkit-backdrop-filter:blur(16px) saturate(1.3); backdrop-filter:blur(16px) saturate(1.3);
+    border:1px solid var(--glass-brd);
     border-radius:var(--radius);
     box-shadow:var(--shadow);
     padding:18px;
-    margin-top:18px;
+    margin-top:16px;
   }
   .card h2{
-    font-size:1rem;margin:0 0 12px;display:flex;align-items:center;gap:8px;
+    font-family:var(--serif);font-weight:700;letter-spacing:.02em;
+    font-size:1.04rem;margin:0 0 12px;display:flex;align-items:center;gap:8px;
     color:var(--green-900);
   }
 
@@ -82,48 +105,50 @@
 
   /* ===== API key ===== */
   details.apikey{
-    background:#fff;border:1px solid var(--line);border-radius:14px;
+    background:var(--glass);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    border:1px solid var(--glass-brd);border-radius:16px;
     margin-top:16px;padding:0 14px;
   }
   details.apikey summary{
-    cursor:pointer;padding:13px 0;font-size:.9rem;font-weight:600;color:var(--green-900);
+    cursor:pointer;padding:14px 0;font-size:.9rem;font-weight:700;color:var(--green-900);
     list-style:none;display:flex;align-items:center;justify-content:space-between;
   }
   details.apikey summary::-webkit-details-marker{display:none;}
-  details.apikey .pill{font-size:.72rem;padding:3px 10px;border-radius:999px;font-weight:700;}
+  details.apikey .pill{font-size:.72rem;padding:3px 11px;border-radius:999px;font-weight:700;}
   .pill.ok{background:var(--green-100);color:var(--green-700);}
-  .pill.no{background:#fde8df;color:var(--warn);}
+  .pill.no{background:#f7e2da;color:var(--warn);}
   details.apikey .body{padding:4px 0 16px;font-size:.84rem;color:var(--ink-soft);}
   .keyrow{display:flex;gap:8px;margin-top:10px;}
   input[type=password],input[type=text],input[type=number],textarea{
     flex:1;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);
-    border-radius:12px;outline:none;background:#fafdfb;color:var(--ink);
+    border-radius:12px;outline:none;background:rgba(255,255,255,.75);color:var(--ink);
     font-family:inherit;width:100%;
   }
   textarea{resize:vertical;min-height:64px;line-height:1.6;}
-  input:focus,textarea:focus{border-color:var(--green-300);}
+  input:focus,textarea:focus{border-color:var(--aqua);background:#fff;}
   .link{color:var(--green-700);text-decoration:underline;}
 
   /* ===== Buttons ===== */
   .btn{
     border:none;border-radius:14px;padding:15px 18px;font-size:1rem;font-weight:700;
     cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:9px;
-    transition:transform .08s ease, opacity .15s;
+    transition:transform .08s ease, box-shadow .2s, opacity .15s;font-family:inherit;letter-spacing:.02em;
   }
   .btn:active{transform:scale(.98);}
-  .btn-primary{background:var(--green-700);color:#fff;box-shadow:0 4px 14px rgba(47,122,77,.35);}
-  .btn-ghost{background:var(--green-100);color:var(--green-700);}
-  .btn-water{background:var(--due);color:#fff;}
+  .btn-primary{background:linear-gradient(135deg,var(--green-700),var(--green-500));color:#fff;box-shadow:0 6px 18px rgba(63,125,91,.34);}
+  .btn-ghost{background:rgba(255,255,255,.6);color:var(--green-700);border:1px solid var(--glass-brd);}
+  .btn-water{background:linear-gradient(135deg,var(--aqua),#46b3a3);color:#fff;box-shadow:0 6px 16px rgba(47,158,143,.30);}
   .btn-save{background:var(--green-500);color:#fff;width:auto;padding:12px 18px;}
   .btn-sm{padding:10px 14px;font-size:.86rem;width:auto;}
-  .btn-danger{background:#fde8df;color:var(--warn);}
+  .btn-danger{background:#f7e2da;color:var(--warn);}
   .btn:disabled{opacity:.5;cursor:not-allowed;}
   .btns{display:flex;flex-direction:column;gap:10px;}
 
   /* ===== Upload preview ===== */
   .preview-box{
-    margin-top:14px;border-radius:14px;overflow:hidden;display:none;
-    border:1px solid var(--line);
+    margin-top:14px;border-radius:16px;overflow:hidden;display:none;
+    border:1px solid var(--glass-brd);
   }
   .preview-box img{width:100%;display:block;max-height:340px;object-fit:cover;}
 
@@ -133,7 +158,7 @@
   #loading{display:none;text-align:center;padding:30px 10px;}
   .leaf-spin{
     width:46px;height:46px;margin:0 auto 14px;border-radius:50%;
-    border:4px solid var(--green-100);border-top-color:var(--green-500);
+    border:4px solid var(--green-100);border-top-color:var(--aqua);
     animation:spin 1s linear infinite;
   }
   @keyframes spin{to{transform:rotate(360deg);}}
@@ -141,95 +166,100 @@
 
   /* ===== Result / detail content ===== */
   .plant-head{text-align:center;padding:6px 0 4px;}
-  .plant-head .name{font-size:1.5rem;font-weight:800;color:var(--green-900);}
+  .plant-head .name{font-family:var(--serif);font-size:1.55rem;font-weight:700;color:var(--green-900);letter-spacing:.03em;}
   .plant-head .sci{font-style:italic;color:var(--ink-soft);font-size:.85rem;margin-top:2px;}
   .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
   .badge{font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--green-100);color:var(--green-700);}
-  .badge.diff{background:#fff4d6;color:#a06b00;}
-  .badge.conf{background:#e3ecff;color:#2b53a0;}
+  .badge.diff{background:#fbf0d8;color:#9a7415;}
+  .badge.conf{background:var(--ai-100);color:var(--ai);}
 
-  .desc{font-size:.9rem;color:var(--ink);background:var(--green-100);padding:12px 14px;border-radius:12px;margin-top:14px;}
+  .desc{font-size:.9rem;color:var(--ink);background:var(--green-100);padding:12px 14px;border-radius:14px;margin-top:14px;}
 
   .care-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
-  .care-item{background:#fafdfb;border:1px solid var(--line);border-radius:12px;padding:11px 12px;}
+  .care-item{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:14px;padding:11px 12px;}
   .care-item .lbl{font-size:.73rem;color:var(--ink-soft);font-weight:700;display:flex;align-items:center;gap:5px;}
   .care-item .val{font-size:.86rem;margin-top:3px;}
 
   .sec{margin-top:18px;}
-  .sec h3{font-size:.92rem;color:var(--green-900);margin:0 0 8px;display:flex;align-items:center;gap:7px;}
-  .listrow{background:#fafdfb;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:.86rem;}
+  .sec h3{font-family:var(--serif);font-size:.96rem;color:var(--green-900);margin:0 0 8px;display:flex;align-items:center;gap:7px;letter-spacing:.02em;}
+  .listrow{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:.86rem;}
   .listrow b{color:var(--green-700);}
-  .season-tag{display:inline-block;background:var(--green-300);color:#fff;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;margin-right:6px;}
+  .season-tag{display:inline-block;background:var(--green-500);color:#fff;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;margin-right:6px;}
 
   .tips li{font-size:.86rem;margin-bottom:6px;}
 
   .disclaimer{font-size:.74rem;color:var(--ink-soft);text-align:center;margin-top:22px;line-height:1.6;}
 
-  .error-box{display:none;background:#fde8df;color:var(--warn);padding:14px;border-radius:12px;margin-top:14px;font-size:.86rem;}
+  .error-box{display:none;background:#f7e2da;color:var(--warn);padding:14px;border-radius:12px;margin-top:14px;font-size:.86rem;}
 
   /* ===== My Garden grid ===== */
   .garden-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
-  .plant-card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:var(--shadow);}
+  .plant-card{background:var(--glass-2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--glass-brd);border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:var(--shadow);transition:transform .08s;}
   .plant-card:active{transform:scale(.98);}
   .plant-card .thumb{width:100%;aspect-ratio:1/1;object-fit:cover;background:var(--green-100);display:block;}
   .plant-card .pc-body{padding:9px 11px 12px;}
-  .plant-card .pc-name{font-weight:800;font-size:.92rem;color:var(--green-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .plant-card .pc-name{font-weight:700;font-size:.92rem;color:var(--green-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .water-badge{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px;margin-top:6px;}
-  .water-badge.due{background:#fce6d6;color:var(--due);}
-  .water-badge.ok{background:var(--green-100);color:var(--green-700);}
+  .water-badge.due{background:#f7e2da;color:var(--due);}
+  .water-badge.ok{background:var(--aqua-100);color:var(--aqua);}
 
   .empty{text-align:center;color:var(--ink-soft);font-size:.9rem;padding:40px 16px;}
   .empty .big{font-size:2.4rem;display:block;margin-bottom:10px;}
 
   /* ===== Detail overlay ===== */
   .overlay{
-    position:fixed;inset:0;z-index:50;background:var(--bg);
+    position:fixed;inset:0;z-index:50;
+    background:
+      radial-gradient(120% 80% at 8% -8%, rgba(82,153,111,.16), transparent 55%),
+      radial-gradient(120% 80% at 100% 0%, rgba(47,158,143,.14), transparent 52%),
+      linear-gradient(180deg,#eaf3ee 0%, #eef4ef 45%, #f4f1ea 100%);
     overflow-y:auto;display:none;
     padding-bottom:calc(40px + env(safe-area-inset-bottom));
   }
   .overlay.open{display:block;}
   .ov-top{
-    position:sticky;top:0;z-index:2;background:rgba(244,249,244,.92);backdrop-filter:blur(8px);
-    display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:2;background:var(--glass-2);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;border-bottom:1px solid var(--glass-brd);
   }
-  .ov-back{background:none;border:none;font-size:1rem;font-weight:700;color:var(--green-700);cursor:pointer;display:flex;align-items:center;gap:4px;}
+  .ov-back{background:none;border:none;font-size:1rem;font-weight:700;color:var(--green-700);cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;}
   .ov-hero{width:100%;max-height:240px;object-fit:cover;display:block;}
 
   /* ===== Growth timeline ===== */
-  .growth-item{display:flex;gap:12px;padding:10px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;background:#fafdfb;}
-  .growth-item img{width:72px;height:72px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--green-100);}
+  .growth-item{display:flex;gap:12px;padding:10px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;background:rgba(255,255,255,.6);}
+  .growth-item img{width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--green-100);}
   .growth-item .gdate{font-size:.74rem;color:var(--green-700);font-weight:700;}
   .growth-item .gnote{font-size:.86rem;margin-top:2px;white-space:pre-wrap;}
   .growth-item .gdel{margin-left:auto;align-self:flex-start;background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:.9rem;}
 
   /* ===== Water log ===== */
   .water-stat{display:flex;gap:10px;margin-top:6px;}
-  .water-stat .ws{flex:1;background:#fafdfb;border:1px solid var(--line);border-radius:12px;padding:10px 12px;text-align:center;}
-  .water-stat .ws .num{font-size:1.2rem;font-weight:800;color:var(--green-700);}
+  .water-stat .ws{flex:1;background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:14px;padding:10px 12px;text-align:center;}
+  .water-stat .ws .num{font-size:1.2rem;font-weight:800;color:var(--aqua);}
   .water-stat .ws .lbl{font-size:.72rem;color:var(--ink-soft);}
   .water-stat .ws.due .num{color:var(--due);}
   .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-  .chip{font-size:.74rem;background:var(--green-100);color:var(--green-700);padding:3px 9px;border-radius:999px;}
+  .chip{font-size:.74rem;background:var(--aqua-100);color:var(--aqua);padding:3px 9px;border-radius:999px;}
 
   /* ===== Calendar ===== */
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-  .cal-head button{background:var(--green-100);color:var(--green-700);border:none;border-radius:10px;width:38px;height:38px;font-size:1.1rem;cursor:pointer;}
-  .cal-head .month{font-weight:800;color:var(--green-900);}
+  .cal-head button{background:var(--green-100);color:var(--green-700);border:none;border-radius:12px;width:38px;height:38px;font-size:1.1rem;cursor:pointer;}
+  .cal-head .month{font-family:var(--serif);font-weight:700;color:var(--green-900);font-size:1.05rem;}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
   .cal-dow{text-align:center;font-size:.7rem;color:var(--ink-soft);font-weight:700;padding:2px 0;}
-  .cal-cell{aspect-ratio:1/1;border-radius:9px;background:#fafdfb;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:4px;font-size:.78rem;position:relative;}
+  .cal-cell{aspect-ratio:1/1;border-radius:11px;background:rgba(255,255,255,.5);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:4px;font-size:.78rem;position:relative;}
   .cal-cell.blank{background:transparent;border:none;}
-  .cal-cell.today{border-color:var(--green-500);background:var(--green-100);font-weight:800;}
+  .cal-cell.today{border-color:var(--aqua);background:var(--aqua-100);font-weight:800;}
   .cal-cell .dots{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap;justify-content:center;}
   .dot{width:6px;height:6px;border-radius:50%;}
   .dot.done{background:var(--green-500);}
-  .dot.due{background:var(--due);}
-  .cal-legend{display:flex;gap:16px;justify-content:center;margin-top:12px;font-size:.74rem;color:var(--ink-soft);}
+  .dot.due{background:var(--aqua);}
+  .cal-legend{display:flex;gap:14px;justify-content:center;margin-top:12px;font-size:.74rem;color:var(--ink-soft);flex-wrap:wrap;}
   .cal-legend span{display:flex;align-items:center;gap:5px;}
 
   .today-water{margin-top:4px;}
-  .tw-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:#fafdfb;}
-  .tw-row img{width:42px;height:42px;border-radius:9px;object-fit:cover;flex-shrink:0;background:var(--green-100);}
+  .tw-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:rgba(255,255,255,.6);}
+  .tw-row img{width:42px;height:42px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--green-100);}
   .tw-row .twn{font-weight:700;font-size:.88rem;flex:1;}
 
   /* ===== Bottom nav ===== */
@@ -237,24 +267,80 @@
     position:fixed;left:0;right:0;bottom:0;z-index:40;
     height:calc(var(--nav-h) + env(safe-area-inset-bottom));
     padding-bottom:env(safe-area-inset-bottom);
-    background:#fff;border-top:1px solid var(--line);
-    display:flex;box-shadow:0 -4px 20px rgba(31,69,51,.06);
+    background:var(--glass-2);
+    -webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);
+    border-top:1px solid var(--glass-brd);
+    display:flex;box-shadow:0 -6px 24px rgba(35,74,54,.08);
   }
   nav.tabbar button{
     flex:1;background:none;border:none;cursor:pointer;color:var(--ink-soft);
     font-size:.7rem;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    font-family:inherit;position:relative;transition:color .2s;
   }
-  nav.tabbar button .ic{font-size:1.35rem;line-height:1;}
+  nav.tabbar button .ic{font-size:1.32rem;line-height:1;}
   nav.tabbar button.active{color:var(--green-700);}
+  nav.tabbar button.active::before{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);width:36px;height:34px;border-radius:999px;background:var(--green-100);z-index:-1;}
 
   .field-label{font-size:.78rem;font-weight:700;color:var(--ink-soft);margin:12px 2px 5px;}
+
+  /* ===== 肥料 (藤) ===== */
+  .water-badge.fert.due{background:var(--fuji-100);color:var(--fuji);}
+  .dot.fert{background:var(--fuji);}
+  .ws.fertdue .num{color:var(--fuji);}
+  .btn-fert{background:linear-gradient(135deg,var(--fuji),#a08fd6);color:#fff;box-shadow:0 6px 16px rgba(140,121,201,.28);}
+  .chip.fert{background:var(--fuji-100);color:var(--fuji);}
+  .season-tag.fert{background:var(--fuji);}
+
+  /* ===== select ===== */
+  select.fld{
+    width:100%;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);
+    border-radius:12px;outline:none;background:rgba(255,255,255,.75);color:var(--ink);font-family:inherit;
+  }
+  select.fld:focus{border-color:var(--aqua);}
+
+  /* ===== 診断結果 ===== */
+  .health-meter{height:12px;border-radius:999px;background:var(--green-100);overflow:hidden;margin-top:6px;}
+  .health-meter .fill{height:100%;border-radius:999px;transition:width .5s;}
+  .sev-badge{font-size:.74rem;font-weight:800;padding:5px 12px;border-radius:999px;}
+  .sev-badge.light{background:var(--green-100);color:var(--green-700);}
+  .sev-badge.mid{background:#fbf0d8;color:#9a7415;}
+  .sev-badge.heavy{background:#f7e2da;color:var(--warn);}
+  .cause-row{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px;}
+  .cause-row .ctop{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .cause-row .cname{font-weight:800;font-size:.9rem;color:var(--green-900);}
+  .like{font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--ai-100);color:var(--ai);flex-shrink:0;}
+  .like.high{background:#f7e2da;color:var(--warn);}
+  .like.mid{background:#fbf0d8;color:#9a7415;}
+  .step-list{counter-reset:step;list-style:none;padding:0;margin:0;}
+  .step-list li{position:relative;padding:10px 12px 10px 42px;background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;font-size:.86rem;}
+  .step-list li::before{counter-increment:step;content:counter(step);position:absolute;left:11px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;background:var(--green-500);color:#fff;font-size:.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;}
+
+  /* ===== settings rows / switch ===== */
+  .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .set-row:last-of-type{border-bottom:none;}
+  .set-title{font-weight:700;font-size:.9rem;color:var(--green-900);}
+  .set-sub{font-size:.75rem;color:var(--ink-soft);margin-top:2px;}
+  .switch{position:relative;display:inline-block;width:50px;height:30px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.2s;cursor:pointer;}
+  .slider::before{content:"";position:absolute;height:24px;width:24px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+  .switch input:checked + .slider{background:var(--aqua);}
+  .switch input:checked + .slider::before{transform:translateX(20px);}
 </style>
 </head>
 <body>
 
 <header>
-  <h1 id="appTitle">🌿 みどりのAI庭師</h1>
-  <p id="appSub">写真で植物を見分けて、育て方を記録しよう。</p>
+  <div class="logo">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="24" cy="24" r="22" fill="#e4f0e9"/>
+      <path d="M24 37c0-7-.2-11-5-15-4-3.4-9-3.2-9-3.2s-.2 6 4 10.2c3.2 3.2 7 4 10 4z" fill="#52996f"/>
+      <path d="M24 33c0-6 1-10.2 6-13.2 4-2.4 8-2 8-2s-.4 6-4 9c-3.2 2.8-7 4-10 4z" fill="#3f7d5b"/>
+      <path d="M24 39V22" stroke="#234a36" stroke-width="2.4" stroke-linecap="round"/>
+    </svg>
+    <h1 id="appTitle">プラログ</h1>
+  </div>
+  <p id="appSub">植物を、見分けて・育てて・記録する。</p>
 </header>
 
 <div class="wrap">
@@ -309,6 +395,46 @@
     </p>
   </section>
 
+  <!-- ============ VIEW: 診断 ============ -->
+  <section class="view" id="view-diagnose">
+    <div class="card">
+      <h2>🩺 元気がないか相談</h2>
+      <p class="hint" style="text-align:left;margin:0 2px 12px;">葉の変色・しおれ・斑点・虫など、気になる部分がはっきり写った写真を選んでください。</p>
+      <div class="btns">
+        <button class="btn btn-primary" id="diagCameraBtn">📸 カメラで撮影</button>
+        <button class="btn btn-ghost" id="diagGalleryBtn">🖼 写真を選ぶ</button>
+      </div>
+      <input type="file" id="diagCameraInput" accept="image/*" capture="environment" hidden />
+      <input type="file" id="diagGalleryInput" accept="image/*" hidden />
+
+      <div class="preview-box" id="diagPreviewBox">
+        <img id="diagPreviewImg" alt="選んだ写真" />
+      </div>
+
+      <div id="diagPickWrap" style="display:none;">
+        <div class="field-label">どの植物ですか？（任意・診断の精度が上がります）</div>
+        <select class="fld" id="diagPlantPick"></select>
+      </div>
+
+      <div class="btns" id="diagAnalyzeWrap" style="display:none;margin-top:14px;">
+        <button class="btn btn-primary" id="diagAnalyzeBtn">🩺 この状態を診断する</button>
+      </div>
+      <div class="error-box" id="diagErrorBox"></div>
+    </div>
+
+    <div class="card" id="diagLoading" style="display:none;">
+      <div class="leaf-spin"></div>
+      <p id="diagLoadingText">AIが症状を観察しています…</p>
+    </div>
+
+    <div class="card" id="diagResult" style="display:none;"></div>
+
+    <p class="disclaimer">
+      ※ AIによる診断は参考情報です。100%正確ではありません。<br>
+      症状が深刻なときや判断に迷うときは、園芸店や専門家にご相談ください。
+    </p>
+  </section>
+
   <!-- ============ VIEW: マイガーデン ============ -->
   <section class="view" id="view-garden">
     <div class="card">
@@ -318,6 +444,29 @@
       </h2>
       <div id="gardenList"></div>
     </div>
+
+    <div class="card">
+      <h2>⚙️ データと通知</h2>
+      <div class="set-row">
+        <div>
+          <div class="set-title">🔔 お世話の通知</div>
+          <div class="set-sub">水やり・肥料の予定日にお知らせ</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="notifToggle"><span class="slider"></span></label>
+      </div>
+      <div class="set-row">
+        <div>
+          <div class="set-title">💾 バックアップ</div>
+          <div class="set-sub">記録をファイルに保存／別の端末へ復元</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button class="btn btn-ghost btn-sm" id="exportBtn" style="flex:1;">⬆️ 書き出す</button>
+        <button class="btn btn-ghost btn-sm" id="importBtn" style="flex:1;">⬇️ 読み込む</button>
+      </div>
+      <input type="file" id="importInput" accept="application/json,.json" hidden />
+      <p class="hint" style="text-align:left;margin:10px 2px 0;">※ データはこの端末の中だけに保存されます。機種変更や履歴の削除に備えて、ときどき書き出しておくと安心です。</p>
+    </div>
   </section>
 
   <!-- ============ VIEW: カレンダー ============ -->
@@ -325,6 +474,10 @@
     <div class="card">
       <h2>💧 今日の水やり</h2>
       <div id="todayWater" class="today-water"></div>
+    </div>
+    <div class="card">
+      <h2>🧪 今日の肥料</h2>
+      <div id="todayFert" class="today-water"></div>
     </div>
     <div class="card">
       <div class="cal-head">
@@ -336,11 +489,12 @@
       <div class="cal-legend">
         <span><i class="dot due"></i> 水やり予定</span>
         <span><i class="dot done"></i> 水やり済み</span>
+        <span><i class="dot fert"></i> 肥料予定</span>
       </div>
     </div>
   </section>
 
-  <footer class="disclaimer">🌱 みどりのAI庭師 &middot; Powered by Google Gemini</footer>
+  <footer class="disclaimer">プラログ &middot; Powered by Google Gemini</footer>
 </div>
 
 <!-- ============ 植物詳細オーバーレイ ============ -->
@@ -367,6 +521,8 @@
       <div class="preview-box" id="mPreviewBox"><img id="mPreviewImg" alt=""></div>
       <div class="field-label">水やりの間隔（日数）</div>
       <input type="number" id="mInterval" value="7" min="1" max="90" />
+      <div class="field-label">肥料の間隔（日数・生育期の目安）</div>
+      <input type="number" id="mFertInterval" value="30" min="1" max="180" />
       <div class="field-label">管理メモ（任意）</div>
       <textarea id="mMemo" placeholder="置き場所・水やりのコツなど自由にメモ"></textarea>
       <div class="btns" style="margin-top:16px;">
@@ -379,7 +535,8 @@
 <!-- ============ ボトムナビ ============ -->
 <nav class="tabbar">
   <button data-tab="identify" class="active"><span class="ic">🔍</span>調べる</button>
-  <button data-tab="garden"><span class="ic">🪴</span>マイガーデン</button>
+  <button data-tab="diagnose"><span class="ic">🩺</span>診断</button>
+  <button data-tab="garden"><span class="ic">🪴</span>ガーデン</button>
   <button data-tab="calendar"><span class="ic">📅</span>カレンダー</button>
 </nav>
 
@@ -391,10 +548,13 @@
 const MODEL = "gemini-2.5-flash";
 const LS_KEY = "garden_gemini_key";
 const LS_PLANTS = "garden_plants";
+const LS_NOTIF = "garden_notif";        // "1" = 通知ON
+const LS_LASTNOTIF = "garden_last_notif"; // 最後に通知した日付キー
 
 const $ = id => document.getElementById(id);
 let currentImage = null;   // 調べる用 {dataUrl, base64, mime}
 let lastResult = null;     // {data, photoThumb}
+let diagImage = null;      // 診断用 {dataUrl, base64, mime}
 
 /* ============ 日付ユーティリティ ============ */
 const DAY = 86400000;
@@ -422,6 +582,20 @@ function nextDueKey(p){ const base=lastWaterKey(p); const d=keyToDate(base); d.s
 function waterStatus(p){
   const diff = daysBetween(todayKey(), nextDueKey(p)); // 残り日数
   if(diff<=0) return {due:true, text: diff===0?"今日水やり":(Math.abs(diff)+"日 超過")};
+  return {due:false, text:"あと"+diff+"日"};
+}
+
+/* ============ 肥料計算 ============ */
+function fertEnabled(p){ return p.fertEnabled!==false; } // 未設定は有効扱い
+function lastFertKey(p){ return (p.fertLog&&p.fertLog.length)? p.fertLog[0] : null; }
+function nextFertDueKey(p){
+  const base = lastFertKey(p) || p.registeredAt || todayKey();
+  const d=keyToDate(base); d.setDate(d.getDate()+(p.fertIntervalDays||30)); return dateKey(d);
+}
+function fertStatus(p){
+  if(!fertEnabled(p)) return {off:true, due:false, text:"オフ"};
+  const diff = daysBetween(todayKey(), nextFertDueKey(p));
+  if(diff<=0) return {due:true, text: diff===0?"今日肥料":(Math.abs(diff)+"日 超過")};
   return {due:false, text:"あと"+diff+"日"};
 }
 
@@ -493,6 +667,7 @@ const RESPONSE_SCHEMA = {
     difficulty:{type:"STRING"},
     description:{type:"STRING"},
     waterIntervalDays:{type:"INTEGER", description:"標準的な水やり間隔の日数（季節平均）"},
+    fertilizerIntervalDays:{type:"INTEGER", description:"生育期の標準的な肥料の間隔の日数（例：14, 30）"},
     care:{type:"OBJECT", properties:{
       water:{type:"STRING"}, sunlight:{type:"STRING"}, temperature:{type:"STRING"},
       soil:{type:"STRING"}, fertilizer:{type:"STRING"}, pruning:{type:"STRING"}
@@ -506,6 +681,7 @@ const RESPONSE_SCHEMA = {
 const PROMPT = `あなたは経験豊富なガーデニングの専門家です。この写真に写っている植物を特定し、日本の気候・住環境を前提に、初心者にもわかる日本語で詳しい育て方を教えてください。
 - 植物が特定できない、または植物が写っていない場合は isPlant を false にし、commonName に「植物を特定できませんでした」と入れてください。
 - waterIntervalDays には標準的な水やり間隔を整数の日数で入れてください（例：3, 7, 14）。
+- fertilizerIntervalDays には生育期の標準的な肥料の間隔を整数の日数で入れてください（例：14, 30）。
 - できる限り具体的に（数値・頻度・季節を含めて）記述してください。
 - すべて自然な日本語で回答してください。`;
 
@@ -576,11 +752,12 @@ function renderResult(d){
   const conf=d.confidence?`<span class="badge conf">確度：${esc(d.confidence)}</span>`:"";
   const diff=d.difficulty?`<span class="badge diff">${esc(d.difficulty)}</span>`:"";
   const wi=d.waterIntervalDays?`<span class="badge">💧 約${d.waterIntervalDays}日ごと</span>`:"";
+  const fi=d.fertilizerIntervalDays?`<span class="badge" style="background:#ece4fb;color:#7b54c9;">🧪 約${d.fertilizerIntervalDays}日ごと</span>`:"";
   box.innerHTML=`
     <div class="plant-head">
       <div class="name">🌷 ${esc(d.commonName)}</div>
       ${d.scientificName?`<div class="sci">${esc(d.scientificName)}</div>`:""}
-      <div class="badges">${diff}${conf}${wi}</div>
+      <div class="badges">${diff}${conf}${wi}${fi}</div>
     </div>
     ${d.description?`<div class="desc">${esc(d.description)}</div>`:""}
     ${careHtml(d)}
@@ -603,6 +780,7 @@ function registerFromResult(){
     photo:lastResult.photoThumb||"",
     care:d.care||{}, fullData:d,
     waterIntervalDays:d.waterIntervalDays||7,
+    fertEnabled:true, fertIntervalDays:d.fertilizerIntervalDays||30, fertLog:[],
     memo:"",
     registeredAt:todayKey(),
     waterLog:[], growthLog:[]
@@ -641,13 +819,17 @@ function openDetail(id){
   $("detailOverlay").classList.add("open");
   $("detailOverlay").scrollTop=0;
 }
-function closeDetail(){ $("detailOverlay").classList.remove("open"); detailId=null; renderGarden(); renderCalendar(); renderTodayWater(); }
+function closeDetail(){ $("detailOverlay").classList.remove("open"); detailId=null; renderGarden(); renderCalendar(); renderTodayWater(); renderTodayFert(); }
 $("detailBack").addEventListener("click", closeDetail);
 
 function renderDetail(p){
   const st=waterStatus(p);
   const last= (p.waterLog&&p.waterLog.length)? fmtJp(p.waterLog[0]) : "まだ記録なし";
   const recentChips=(p.waterLog||[]).slice(0,8).map(k=>`<span class="chip">${fmtJp(k)}</span>`).join("") || `<span style="color:var(--ink-soft);font-size:.82rem;">水やりの記録がまだありません</span>`;
+
+  // 肥料カードの中身
+  const fertBodyHtml = buildFertBody(p);
+
   const growth=(p.growthLog||[]);
   const growthHtml = growth.length? growth.map((g,i)=>`
     <div class="growth-item">
@@ -684,6 +866,14 @@ function renderDetail(p){
         <div class="chips">${recentChips}</div>
       </div>
 
+      <!-- 肥料 -->
+      <div class="card">
+        <h2 style="justify-content:space-between;"><span>🧪 肥料</span>
+          <label class="switch"><input type="checkbox" id="fertToggle" ${fertEnabled(p)?"checked":""}><span class="slider"></span></label>
+        </h2>
+        <div id="fertBody">${fertBodyHtml}</div>
+      </div>
+
       <!-- 成長記録 -->
       <div class="card">
         <h2 style="justify-content:space-between;"><span>🌱 成長記録</span>
@@ -718,6 +908,7 @@ function renderDetail(p){
     const v=Math.max(1,Math.min(90,parseInt($("intervalEdit").value)||7));
     updatePlant(p.id,pl=>pl.waterIntervalDays=v); renderDetail(getPlant(p.id));
   });
+  wireFertEvents(p);
   $("addGrowth").addEventListener("click",()=>{ growthTargetId=p.id; $("growthInput").click(); });
   $("saveMemo").addEventListener("click",()=>{
     updatePlant(p.id,pl=>pl.memo=$("memoEdit").value);
@@ -740,6 +931,46 @@ function careOnlyHtml(care){
   return `<div class="care-grid">${item("💧","水やり",care.water)}${item("☀️","日当たり",care.sunlight)}${item("🌡","温度",care.temperature)}${item("🪴","土",care.soil)}${item("🧪","肥料",care.fertilizer)}${item("✂️","剪定",care.pruning)}</div>`;
 }
 
+/* 肥料カードの中身 */
+function buildFertBody(p){
+  if(!fertEnabled(p)){
+    return `<div style="color:var(--ink-soft);font-size:.85rem;">肥料の管理はオフです。右上のスイッチでオンにできます。</div>`;
+  }
+  const st=fertStatus(p);
+  const last=(p.fertLog&&p.fertLog.length)? fmtJp(p.fertLog[0]) : "まだ記録なし";
+  const chips=(p.fertLog||[]).slice(0,8).map(k=>`<span class="chip fert">${fmtJp(k)}</span>`).join("") || `<span style="color:var(--ink-soft);font-size:.82rem;">肥料の記録がまだありません</span>`;
+  return `
+    <div class="water-stat">
+      <div class="ws"><div class="num">${esc(last)}</div><div class="lbl">前回の肥料</div></div>
+      <div class="ws ${st.due?'fertdue':''}"><div class="num">${st.text}</div><div class="lbl">次の予定（${p.fertIntervalDays||30}日ごと）</div></div>
+    </div>
+    <button class="btn btn-fert" id="fertNow" style="margin-top:12px;">🧪 肥料をあげた記録</button>
+    <div class="field-label">肥料の間隔（日数）</div>
+    <div style="display:flex;gap:8px;">
+      <input type="number" id="fertIntervalEdit" value="${p.fertIntervalDays||30}" min="1" max="180">
+      <button class="btn btn-save" id="saveFertInterval">変更</button>
+    </div>
+    <div class="field-label">最近の肥料</div>
+    <div class="chips">${chips}</div>`;
+}
+function wireFertEvents(p){
+  const tog=$("fertToggle");
+  if(tog) tog.addEventListener("change",e=>{
+    updatePlant(p.id,pl=>pl.fertEnabled=e.target.checked);
+    renderDetail(getPlant(p.id));
+  });
+  const now=$("fertNow");
+  if(now) now.addEventListener("click",()=>{
+    updatePlant(p.id,pl=>{ pl.fertLog=pl.fertLog||[]; const tk=todayKey(); if(pl.fertLog[0]!==tk) pl.fertLog.unshift(tk); pl.fertLog=pl.fertLog.slice(0,60); });
+    renderDetail(getPlant(p.id));
+  });
+  const save=$("saveFertInterval");
+  if(save) save.addEventListener("click",()=>{
+    const v=Math.max(1,Math.min(180,parseInt($("fertIntervalEdit").value)||30));
+    updatePlant(p.id,pl=>pl.fertIntervalDays=v); renderDetail(getPlant(p.id));
+  });
+}
+
 /* 成長記録の写真追加 */
 let growthTargetId=null;
 $("growthInput").addEventListener("change",e=>{
@@ -758,7 +989,7 @@ let manualPhoto="";
 $("addManualBtn").addEventListener("click",()=>{ openManual(); });
 $("manualBack").addEventListener("click",()=>$("manualOverlay").classList.remove("open"));
 function openManual(){
-  manualPhoto=""; $("mName").value=""; $("mInterval").value="7"; $("mMemo").value="";
+  manualPhoto=""; $("mName").value=""; $("mInterval").value="7"; $("mFertInterval").value="30"; $("mMemo").value="";
   $("mPreviewBox").style.display="none";
   $("manualOverlay").classList.add("open"); $("manualOverlay").scrollTop=0;
 }
@@ -772,6 +1003,7 @@ $("mSave").addEventListener("click",()=>{
   if(!name){ alert("植物の名前を入力してください"); return; }
   const plant={ id:"p"+Date.now(), name, scientificName:"", photo:manualPhoto,
     care:{}, fullData:null, waterIntervalDays:Math.max(1,Math.min(90,parseInt($("mInterval").value)||7)),
+    fertEnabled:true, fertIntervalDays:Math.max(1,Math.min(180,parseInt($("mFertInterval").value)||30)), fertLog:[],
     memo:$("mMemo").value, registeredAt:todayKey(), waterLog:[], growthLog:[] };
   const arr=getPlants(); arr.unshift(plant);
   if(savePlants(arr)){ $("manualOverlay").classList.remove("open"); switchTab("garden"); openDetail(plant.id); }
@@ -791,21 +1023,31 @@ function renderCalendar(){
   const daysInMonth=new Date(calY,calM+1,0).getDate();
   const tk=todayKey();
 
-  // 各日の {due:Set(plantId), done:Set(plantId)}
+  // 各日の {due, done, fertDue}（Set(plantId)）
   const map={};
-  const ensure=k=>map[k]||(map[k]={due:new Set(),done:new Set()});
+  const ensure=k=>map[k]||(map[k]={due:new Set(),done:new Set(),fertDue:new Set()});
   const monStart=dateKey(new Date(calY,calM,1));
   const monEnd=dateKey(new Date(calY,calM,daysInMonth));
   plants.forEach(p=>{
     // 水やり済み
     (p.waterLog||[]).forEach(k=>{ if(k>=monStart&&k<=monEnd) ensure(k).done.add(p.id); });
-    // 予定（前回の水やり/登録日から間隔ごと）
+    // 水やり予定（前回の水やり/登録日から間隔ごと）
     let d=keyToDate(lastWaterKey(p)); const iv=p.waterIntervalDays||7;
     for(let i=0;i<400;i++){
       d=new Date(d.getTime()+iv*DAY);
       const k=dateKey(d);
       if(k>monEnd) break;
       if(k>=monStart) ensure(k).due.add(p.id);
+    }
+    // 肥料予定
+    if(fertEnabled(p)){
+      let fd=keyToDate(lastFertKey(p)||p.registeredAt||todayKey()); const fiv=p.fertIntervalDays||30;
+      for(let i=0;i<400;i++){
+        fd=new Date(fd.getTime()+fiv*DAY);
+        const k=dateKey(fd);
+        if(k>monEnd) break;
+        if(k>=monStart) ensure(k).fertDue.add(p.id);
+      }
     }
   });
 
@@ -819,6 +1061,7 @@ function renderCalendar(){
     if(cell){
       if(cell.done.size) dots+=`<i class="dot done"></i>`;
       if(cell.due.size) dots+=`<i class="dot due"></i>`;
+      if(cell.fertDue.size) dots+=`<i class="dot fert"></i>`;
     }
     html+=`<div class="cal-cell ${k===tk?'today':''}"><span>${day}</span><div class="dots">${dots}</div></div>`;
   }
@@ -840,20 +1083,237 @@ function renderTodayWater(){
   }));
 }
 
+function renderTodayFert(){
+  const plants=getPlants();
+  const due=plants.filter(p=>fertStatus(p).due);
+  const box=$("todayFert");
+  if(!due.length){ box.innerHTML=`<div style="color:var(--ink-soft);font-size:.88rem;">今日肥料が必要な植物はありません 🌿</div>`; return; }
+  box.innerHTML=due.map(p=>{
+    const img=p.photo?`<img src="${p.photo}" alt="">`:`<div style="width:42px;height:42px;border-radius:9px;background:var(--green-100);display:flex;align-items:center;justify-content:center;">🌱</div>`;
+    return `<div class="tw-row">${img}<span class="twn">${esc(p.name)}</span><button class="btn btn-fert btn-sm" data-id="${p.id}">🧪 完了</button></div>`;
+  }).join("");
+  box.querySelectorAll("button[data-id]").forEach(b=>b.addEventListener("click",()=>{
+    updatePlant(b.dataset.id,pl=>{ pl.fertLog=pl.fertLog||[]; const tk=todayKey(); if(pl.fertLog[0]!==tk) pl.fertLog.unshift(tk); });
+    renderTodayFert(); renderCalendar(); renderGarden();
+  }));
+}
+
 /* ============ タブ切替 ============ */
 function switchTab(tab){
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   $("view-"+tab).classList.add("active");
   document.querySelectorAll("nav.tabbar button").forEach(b=>b.classList.toggle("active", b.dataset.tab===tab));
   if(tab==="garden") renderGarden();
-  if(tab==="calendar"){ renderCalendar(); renderTodayWater(); }
+  if(tab==="calendar"){ renderCalendar(); renderTodayWater(); renderTodayFert(); }
+  if(tab==="diagnose") refreshDiagPicker();
   window.scrollTo({top:0});
 }
 document.querySelectorAll("nav.tabbar button").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
 
+/* ============ 診断（健康診断） ============ */
+function refreshDiagPicker(){
+  const sel=$("diagPlantPick"); const plants=getPlants();
+  sel.innerHTML=`<option value="">選択しない</option>`+plants.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");
+}
+$("diagCameraBtn").addEventListener("click",()=>$("diagCameraInput").click());
+$("diagGalleryBtn").addEventListener("click",()=>$("diagGalleryInput").click());
+$("diagCameraInput").addEventListener("change",e=>handleDiagFile(e.target.files[0]));
+$("diagGalleryInput").addEventListener("change",e=>handleDiagFile(e.target.files[0]));
+function handleDiagFile(file){
+  if(!file) return;
+  fileToResized(file,1024,0.85,(dataUrl)=>{
+    diagImage={dataUrl, base64:dataUrl.split(",")[1], mime:"image/jpeg"};
+    $("diagPreviewImg").src=dataUrl;
+    $("diagPreviewBox").style.display="block";
+    $("diagAnalyzeWrap").style.display="flex";
+    $("diagPickWrap").style.display = getPlants().length? "block":"none";
+    $("diagResult").style.display="none";
+    $("diagErrorBox").style.display="none";
+    $("diagPreviewBox").scrollIntoView({behavior:"smooth",block:"center"});
+  });
+}
+
+const DIAG_SCHEMA = {
+  type:"OBJECT",
+  properties:{
+    isPlant:{type:"BOOLEAN"},
+    overall:{type:"STRING", description:"全体的な見立てを一言で"},
+    severity:{type:"STRING", description:"軽度 / 中度 / 重度 のいずれか"},
+    healthScore:{type:"INTEGER", description:"健康度0〜100"},
+    symptoms:{type:"ARRAY", items:{type:"STRING"}, description:"写真から見える症状"},
+    causes:{type:"ARRAY", items:{type:"OBJECT", properties:{
+      cause:{type:"STRING"}, likelihood:{type:"STRING", description:"高い/中くらい/低い"}, detail:{type:"STRING"}
+    }}},
+    treatment:{type:"ARRAY", items:{type:"STRING"}, description:"今すぐできる対処を手順で"},
+    prevention:{type:"ARRAY", items:{type:"STRING"}, description:"再発を防ぐコツ"}
+  },
+  required:["isPlant","overall","severity","causes","treatment"]
+};
+
+$("diagAnalyzeBtn").addEventListener("click", diagnose);
+async function diagnose(){
+  const key=localStorage.getItem(LS_KEY);
+  if(!key){ showDiagError("先にGemini APIキーを設定してください。「調べる」タブの「🔑 APIキーの設定」から登録できます。"); return; }
+  if(!diagImage){ showDiagError("写真を選んでください。"); return; }
+  $("diagErrorBox").style.display="none"; $("diagResult").style.display="none";
+  $("diagLoading").style.display="block"; $("diagAnalyzeBtn").disabled=true;
+  cycleDiagText(); $("diagLoading").scrollIntoView({behavior:"smooth",block:"center"});
+
+  const picked=getPlant($("diagPlantPick").value);
+  const ctx = picked? `この植物は「${picked.name}${picked.scientificName?("（"+picked.scientificName+"）"):""}」です。` : "";
+  const prompt = `あなたは経験豊富な植物のお医者さんです。${ctx}この写真の植物の健康状態を診断してください。
+- 葉の色・斑点・しおれ・虫・カビなど、写真から読み取れる症状を挙げてください。
+- 考えられる原因を可能性の高い順に挙げ、それぞれ likelihood に「高い」「中くらい」「低い」を入れてください。
+- 原因には水のやりすぎ/水切れ/日照不足/日照過多/根詰まり/肥料過多や不足/病気/害虫などを検討してください。
+- treatment には初心者がすぐ実行できる対処を具体的な手順で入れてください。
+- severity は「軽度」「中度」「重度」のいずれか、healthScore は0〜100の整数。
+- 植物が写っていない場合は isPlant を false にしてください。
+- すべて自然な日本語で回答してください。`;
+
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${encodeURIComponent(key)}`;
+  const body={ contents:[{parts:[{text:prompt},{inline_data:{mime_type:diagImage.mime,data:diagImage.base64}}]}],
+    generationConfig:{responseMimeType:"application/json", responseSchema:DIAG_SCHEMA, temperature:0.4} };
+  try{
+    const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(!res.ok){
+      const t=await res.text();
+      if(res.status===400 && t.includes("API_KEY")) throw new Error("APIキーが無効です。正しいキーを設定してください。");
+      if(res.status===429) throw new Error("利用上限に達しました。しばらく待ってから再度お試しください。");
+      throw new Error("AIへの接続に失敗しました（"+res.status+"）。");
+    }
+    const json=await res.json();
+    const text=json.candidates?.[0]?.content?.parts?.[0]?.text;
+    if(!text) throw new Error("AIから回答を取得できませんでした。別の写真でお試しください。");
+    renderDiag(JSON.parse(text));
+  }catch(err){ showDiagError(err.message||"エラーが発生しました。"); }
+  finally{ stopDiagText(); $("diagLoading").style.display="none"; $("diagAnalyzeBtn").disabled=false; }
+}
+const diagMsgs=["AIが症状を観察しています…","葉や茎の状態を分析中…","考えられる原因を絞り込み中…","対処法をまとめています🌱"];
+let diagTimer=null, diagIdx=0;
+function cycleDiagText(){ diagIdx=0; $("diagLoadingText").textContent=diagMsgs[0];
+  diagTimer=setInterval(()=>{ diagIdx=(diagIdx+1)%diagMsgs.length; $("diagLoadingText").textContent=diagMsgs[diagIdx]; },1800); }
+function stopDiagText(){ if(diagTimer) clearInterval(diagTimer); }
+function showDiagError(msg){ const e=$("diagErrorBox"); e.textContent="⚠️ "+msg; e.style.display="block"; e.scrollIntoView({behavior:"smooth",block:"center"}); }
+
+function renderDiag(d){
+  const box=$("diagResult");
+  if(d.isPlant===false){
+    box.innerHTML=`<div class="plant-head"><div class="name">🤔 植物を確認できませんでした</div></div>
+      <div class="desc">葉や気になる部分がはっきり写った、明るい写真でもう一度お試しください。</div>`;
+    box.style.display="block"; box.scrollIntoView({behavior:"smooth",block:"start"}); return;
+  }
+  const sevClass = d.severity&&d.severity.includes("重")?"heavy":(d.severity&&d.severity.includes("中")?"mid":"light");
+  const score = (typeof d.healthScore==="number")? Math.max(0,Math.min(100,d.healthScore)) : null;
+  const scoreColor = score===null?"":(score>=70?"var(--green-500)":(score>=40?"#e8a33a":"var(--warn)"));
+  const likeClass = l => l&&l.includes("高")?"high":(l&&l.includes("中")?"mid":"");
+  let h=`<div class="plant-head" style="padding-top:0;">
+      <div class="badges" style="margin-top:0;">
+        ${d.severity?`<span class="sev-badge ${sevClass}">重症度：${esc(d.severity)}</span>`:""}
+      </div>
+    </div>
+    <div class="desc">${esc(d.overall)}</div>`;
+  if(score!==null){
+    h+=`<div class="sec"><h3>💚 健康度：${score}/100</h3>
+      <div class="health-meter"><div class="fill" style="width:${score}%;background:${scoreColor};"></div></div></div>`;
+  }
+  if(Array.isArray(d.symptoms)&&d.symptoms.length)
+    h+=`<div class="sec"><h3>🔎 見られる症状</h3>`+d.symptoms.map(s=>`<div class="listrow">${esc(s)}</div>`).join("")+`</div>`;
+  if(Array.isArray(d.causes)&&d.causes.length)
+    h+=`<div class="sec"><h3>🧐 考えられる原因</h3>`+d.causes.map(c=>`
+      <div class="cause-row"><div class="ctop"><span class="cname">${esc(c.cause)}</span>${c.likelihood?`<span class="like ${likeClass(c.likelihood)}">可能性 ${esc(c.likelihood)}</span>`:""}</div>
+      ${c.detail?`<div style="font-size:.84rem;margin-top:5px;color:var(--ink);">${esc(c.detail)}</div>`:""}</div>`).join("")+`</div>`;
+  if(Array.isArray(d.treatment)&&d.treatment.length)
+    h+=`<div class="sec"><h3>🩹 今すぐできる対処</h3><ol class="step-list">`+d.treatment.map(t=>`<li>${esc(t)}</li>`).join("")+`</ol></div>`;
+  if(Array.isArray(d.prevention)&&d.prevention.length)
+    h+=`<div class="sec"><h3>🛡 これからの予防</h3><ul class="tips">`+d.prevention.map(t=>`<li>${esc(t)}</li>`).join("")+`</ul></div>`;
+  h+=`<div class="btns" style="margin-top:18px;"><button class="btn btn-ghost" onclick="window.scrollTo({top:0,behavior:'smooth'})">📷 別の写真で診断する</button></div>`;
+  box.innerHTML=h;
+  box.style.display="block"; box.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+/* ============ バックアップ ============ */
+$("exportBtn").addEventListener("click",()=>{
+  const data={ app:"midori-ai-gardener", version:1, exportedAt:new Date().toISOString(), plants:getPlants() };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download="midori-garden-backup-"+todayKey()+".json";
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+$("importBtn").addEventListener("click",()=>$("importInput").click());
+$("importInput").addEventListener("change",e=>{
+  const file=e.target.files[0]; e.target.value=""; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const obj=JSON.parse(reader.result);
+      const imported = Array.isArray(obj)? obj : obj.plants;
+      if(!Array.isArray(imported)) throw 0;
+      const cur=getPlants();
+      const byId={}; cur.forEach(p=>byId[p.id]=p);
+      let added=0;
+      imported.forEach(p=>{ if(p&&p.id){ if(!byId[p.id]) added++; byId[p.id]=p; } });
+      const merged=Object.values(byId);
+      if(savePlants(merged)){
+        alert("読み込み完了！ "+imported.length+"件のうち新規"+added+"件を追加しました（合計"+merged.length+"件）。");
+        renderGarden(); renderCalendar(); renderTodayWater(); renderTodayFert();
+      }
+    }catch(err){ alert("バックアップファイルを読み込めませんでした。正しいファイルか確認してください。"); }
+  };
+  reader.readAsText(file);
+});
+
+/* ============ 通知 ============ */
+function notifOn(){ return localStorage.getItem(LS_NOTIF)==="1"; }
+$("notifToggle").checked=notifOn();
+$("notifToggle").addEventListener("change", async e=>{
+  if(e.target.checked){
+    if(!("Notification" in window)){ alert("お使いのブラウザは通知に対応していません。"); e.target.checked=false; return; }
+    let perm=Notification.permission;
+    if(perm!=="granted") perm=await Notification.requestPermission();
+    if(perm!=="granted"){ alert("通知が許可されませんでした。端末やブラウザの設定から通知を許可してください。\niPhoneの場合は、このアプリをホーム画面に追加してから開くと通知を使えます。"); e.target.checked=false; return; }
+    localStorage.setItem(LS_NOTIF,"1");
+    showNotif("🌱 プラログ","通知をオンにしました。お世話の予定日にお知らせします。");
+    localStorage.setItem(LS_LASTNOTIF,todayKey()); // 直後の二重通知を防止
+  } else {
+    localStorage.removeItem(LS_NOTIF);
+  }
+});
+function dueCounts(){
+  const plants=getPlants();
+  return { water:plants.filter(p=>waterStatus(p).due), fert:plants.filter(p=>fertStatus(p).due) };
+}
+function showNotif(title, bodyText){
+  const opt={ body:bodyText, icon:"icon-192.png", badge:"icon-192.png" };
+  try{
+    if(navigator.serviceWorker && navigator.serviceWorker.ready){
+      navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opt)).catch(()=>{ try{ new Notification(title,opt); }catch(_){} });
+    } else { new Notification(title,opt); }
+  }catch(e){ try{ new Notification(title,opt); }catch(_){} }
+}
+function checkAndNotify(){
+  if(!notifOn() || !("Notification" in window) || Notification.permission!=="granted") return;
+  if(localStorage.getItem(LS_LASTNOTIF)===todayKey()) return; // 1日1回
+  const {water,fert}=dueCounts();
+  if(!water.length && !fert.length) return;
+  localStorage.setItem(LS_LASTNOTIF,todayKey());
+  const parts=[];
+  if(water.length) parts.push("💧水やり "+water.length+"件");
+  if(fert.length) parts.push("🧪肥料 "+fert.length+"件");
+  const names=[...new Set([...water,...fert].map(p=>p.name))].slice(0,4).join("、");
+  showNotif("🌿 今日のお世話", parts.join(" / ")+"\n"+names);
+}
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkAndNotify(); });
+setInterval(checkAndNotify, 30*60*1000); // 開いている間は30分ごとに確認
+
+/* ============ Service Worker ============ */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+}
+
 /* ============ 初期化 ============ */
 loadKey();
 renderGarden();
+checkAndNotify();
 </script>
 </body>
 </html>
